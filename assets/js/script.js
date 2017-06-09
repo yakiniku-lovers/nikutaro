@@ -1,9 +1,21 @@
-window.addEventListener("load", init);
-function init() {
-    var stage = new createjs.Stage("nikutaro");
+var stage, w, h;
+window.addEventListener("load", init); 
+
+function init() { 
+    stage = new createjs.Stage("nikutaro");
+    w = stage.canvas.width;
+    h = stage.canvas.height;
+
     var beef = new createjs.Bitmap("./assets/images/beef.jpg");
     stage.addChild(beef);
-    beef.x = (640 - 346) / 2; //後でちゃんと指定します。
-    beef.y = (480 - 230) / 2;
-    stage.update();
+    beef.regX = beef.getBounds().width / 2;
+    beef.regY = beef.getBounds().height / 2;
+    beef.x = w * 0.5;
+    beef.y = h * 0.7;
+
+    createjs.Ticker.addEventListener("tick", tick);
+}
+
+function tick(event) {
+	stage.update(event);
 }
