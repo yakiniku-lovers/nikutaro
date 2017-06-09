@@ -37,8 +37,9 @@ function handleComplete() {
     beef.x = w * 0.5;
     beef.y = h * 0.7;
 
-    for(var i = 0; i < CUSTOMER_NUM; i++)
+    for(var i = 0; i < CUSTOMER_NUM; i++) {
         customer[i] = new createjs.Bitmap(loader.getResult("customer" + i));
+    }
     balloon = new createjs.Bitmap(loader.getResult("balloon"));
     problemInit();
 
@@ -124,8 +125,9 @@ function problemInit() {
 }
 
 function problemUpdate(id) {
-    for(var i = 0; i < CUSTOMER_NUM; i++)
+    for(var i = 0; i < CUSTOMER_NUM; i++) {
         customer[i].visible = false;
+    }
     customer[count % CUSTOMER_NUM].visible = true;
     questionText.text = jpQuests[quests[id]];
     questionText.regX = questionText.getBounds().width / 2;
