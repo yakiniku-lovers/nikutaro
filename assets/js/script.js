@@ -5,7 +5,7 @@ const quests = [
 ];
 
 var stage, w, h, loader;
-var beef, balloon, questionText, questions;
+var beef, balloon, questionText, questions, currentScore = 0;
 var customer = new Array();
 const MAX = 10; //問題数
 const CUSTOMER_NUM = 8;
@@ -38,6 +38,9 @@ function init() {
     loader.addEventListener("complete", handleComplete);
     loader.loadManifest(manifest, true, "./assets/images/");
     createjs.Sound.registerSound("./assets/sounds/mowmow.mp3", "mowmow");
+	
+	scoreText = new createjs.Text("", "20px Arial", "#000000");
+	stage.addChild(scoreText);
 }
 
 function handleComplete() {
@@ -70,8 +73,6 @@ function handleComplete() {
     problemInit();
 
     stage.addChild(beef);
-    beef.addEventListener("click", sayMoo);
-    beef.addEventListener("click", nextProblem);
     createjs.Ticker.addEventListener("tick", tick);
 }
 
@@ -81,6 +82,12 @@ function tick(event) {
         now = 0;
     }
     problemUpdate(questions[now]);
+
+	scoreText.text = "Score: " + currentScore;
+	scoreText.regX = scoreText.getBounds().width;
+	scoreText.x = w;
+	scoreText.y = 10;
+	
 	stage.update(event);
 }
 
@@ -90,7 +97,14 @@ function sayMoo(event){
 }
 
 function clickBeefParts(event, i) {
-    createjs.Sound.play("mowmow");  
+	if (i == questions[now]){
+		nextProblem();
+		currentScore += 10;
+	} else {
+    	createjs.Sound.play("mowmow");  
+		currentScore -= 50;
+	}
+	
     console.dir(i);
 }
 
@@ -134,7 +148,7 @@ function problemInit() {
         customer[i].regX = customer[i].getBounds().width / 2;
         customer[i].regY = customer[i].getBounds().height / 2;
         customer[i].x = w * 0.8;
-        customer[i].y = h * 0.2;
+        customer[i].y = h * 0.2 + 50;
         stage.addChild(customer[i]);
     }
     balloon.scaleX = 0.8;
@@ -142,10 +156,10 @@ function problemInit() {
     balloon.regX = balloon.getBounds().width / 2;
     balloon.regY = balloon.getBounds().height / 2;
     balloon.x = w * 0.4;
-    balloon.y = h * 0.15;
+    balloon.y = h * 0.15 + 50;
     questionText = new createjs.Text("", "20px Arial", "#000000");
     questionText.x = w * 0.37;
-    questionText.y = h * 0.15;
+    questionText.y = h * 0.15 + 50;
     stage.addChild(balloon);
     stage.addChild(questionText);
 }
