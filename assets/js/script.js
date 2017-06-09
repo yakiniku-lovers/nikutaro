@@ -14,6 +14,7 @@ function init() {
     loader = new createjs.LoadQueue(false);
     loader.addEventListener("complete", handleComplete);
     loader.loadManifest(manifest, true, "./assets/images/");
+    loadSound();
 }
 
 function handleComplete() {
@@ -23,9 +24,20 @@ function handleComplete() {
     beef.x = w * 0.5;
     beef.y = h * 0.7;
     stage.addChild(beef);
+    beef.addEventListener("click", sayMoo);
     createjs.Ticker.addEventListener("tick", tick);
 }
 
 function tick(event) {
 	stage.update(event);
+}
+
+function sayMoo(event){
+    // "mowmow"は後でconstに追加
+	createjs.Sound.play("mowmow");
+}
+
+function loadSound() {
+    // "mowmow"は後でconstに追加
+    createjs.Sound.registerSound("./assets/sounds/mowmow.mp3", "mowmow");
 }
