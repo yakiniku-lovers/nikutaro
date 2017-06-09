@@ -1,11 +1,15 @@
 var stage, w, h, loader;
-var beef, balloon, questionText;
+var beef, balloon, questionText, questions;
+var now = 0;
+const MAX = 100; //問題数
 window.addEventListener("load", init); 
 
 function init() { 
     stage = new createjs.Stage("nikutaro");
     w = stage.canvas.width;
     h = stage.canvas.height;
+
+    questions = generateProblem(MAX);
 
     var manifest = [
         {src: "beef.jpg", id: "beef"},
@@ -32,17 +36,22 @@ function handleComplete() {
 
     stage.addChild(beef);
     beef.addEventListener("click", sayMoo);
+    beef.addEventListener("click", nextProblem);
     createjs.Ticker.addEventListener("tick", tick);
 }
 
 function tick(event) {
-    problemUpdate(1);
+    problemUpdate(questions[now]);
 	stage.update(event);
 }
 
 function sayMoo(event){
     // "mowmow"は後でconstに追加
     createjs.Sound.play("mowmow");
+}
+
+function nextProblem(event) {
+    now++;
 }
 
 const quests = [
