@@ -8,21 +8,11 @@ function init() {
     stage.update();
 }
 
-const Neck = 0;
-const Shoulder = 1;
-const Tombi = 2;
-const Misuji = 3;
-const ShoulderLoin = 4;
-const RibLoin = 5;
-const Sirloin = 6;
-const Fillet = 7;
-const Bara = 8;
-const Uchimomo = 9;
-const Shintama =10;
-const Sotomomo = 11;
-const Lampu = 12;
-const Ichibo = 13;
-const Sune = 14;
+const quest = [
+  "Neck","Shoulder","Tombi","Misuji","ShoulderLoin","RibLoin",
+  "Sirloin","Fillet","Bara","Uchimomo","Shintama","Sotomomo","Lampu",
+  "Ichibo","Sune"
+];
 
 function generateProblem(num) {
 	var problems = new Array();
