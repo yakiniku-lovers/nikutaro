@@ -194,7 +194,7 @@ var passageId;
 var timerText;
 
 function updateTimer() {
-  timerText.text = remainSec / 10;
+  timerText.text = (remainSec / 10).toFixed(1);
   if(remainSec <= 0.0){
     stopTimer();
   }
