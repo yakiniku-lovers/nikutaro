@@ -1,7 +1,9 @@
 var stage, w, h, loader;
 var beef, balloon, questionText, questions;
+var customer = new Array();
 const MAX = 10; //問題数
-var now = MAX;
+const CUSTOMER_NUM = 8;
+var now = MAX, count = 0;
 window.addEventListener("load", init); 
 
 function init() { 
@@ -11,7 +13,14 @@ function init() {
 
     var manifest = [
         {src: "beef.jpg", id: "beef"},
+        {src: "customer0.png", id: "customer0"},
         {src: "customer1.png", id: "customer1"},
+        {src: "customer2.png", id: "customer2"},
+        {src: "customer3.png", id: "customer3"},
+        {src: "customer4.png", id: "customer4"},
+        {src: "customer5.png", id: "customer5"},
+        {src: "customer6.png", id: "customer6"},
+        {src: "customer7.png", id: "customer7"},
         {src: "balloon.png", id: "balloon"}
     ];
 
@@ -28,7 +37,8 @@ function handleComplete() {
     beef.x = w * 0.5;
     beef.y = h * 0.7;
 
-    customer1 = new createjs.Bitmap(loader.getResult("customer1"));
+    for(var i = 0; i < CUSTOMER_NUM; i++)
+        customer[i] = new createjs.Bitmap(loader.getResult("customer" + i));
     balloon = new createjs.Bitmap(loader.getResult("balloon"));
     problemInit();
 
@@ -54,6 +64,7 @@ function sayMoo(event){
 
 function nextProblem(event) {
     now++;
+    count++;
 }
 
 const quests = [
@@ -90,12 +101,15 @@ function generateProblem(num) {
 }
 
 function problemInit() {
-    customer1.scaleX = 0.2;
-    customer1.scaleY = 0.2;
-    customer1.regX = customer1.getBounds().width / 2;
-    customer1.regY = customer1.getBounds().height / 2;
-    customer1.x = w * 0.8;
-    customer1.y = h * 0.2;
+    for(var i = 0; i < CUSTOMER_NUM; i++) {
+        customer[i].scaleX = 0.2;
+        customer[i].scaleY = 0.2;
+        customer[i].regX = customer[i].getBounds().width / 2;
+        customer[i].regY = customer[i].getBounds().height / 2;
+        customer[i].x = w * 0.8;
+        customer[i].y = h * 0.2;
+        stage.addChild(customer[i]);
+    }
     balloon.scaleX = 0.8;
     balloon.scaleY = 0.8;
     balloon.regX = balloon.getBounds().width / 2;
@@ -105,12 +119,14 @@ function problemInit() {
     questionText = new createjs.Text("", "20px Arial", "#000000");
     questionText.x = w * 0.37;
     questionText.y = h * 0.15;
-    stage.addChild(customer1);
     stage.addChild(balloon);
     stage.addChild(questionText);
 }
 
 function problemUpdate(id) {
+    for(var i = 0; i < CUSTOMER_NUM; i++)
+        customer[i].visible = false;
+    customer[count % CUSTOMER_NUM].visible = true;
     questionText.text = jpQuests[quests[id]];
     questionText.regX = questionText.getBounds().width / 2;
     questionText.regY = questionText.getBounds().height / 2;
