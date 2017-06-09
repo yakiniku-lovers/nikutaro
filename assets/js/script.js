@@ -18,7 +18,7 @@ function init() {
     h = stage.canvas.height;
 
     var manifest = [
-        {src: "beef.jpg", id: "beef"},
+        {src: "beef.png", id: "beef"},
         {src: "niku.png", id: "niku"},
         {src: "customer0.png", id: "customer0"},
         {src: "customer1.png", id: "customer1"},
@@ -84,12 +84,6 @@ function handleComplete() {
 }
 
 function tick(event) {
-    if(now >= MAX) {
-        questions = generateProblem(MAX);
-        now = 0;
-    }
-    problemUpdate(questions[now]);
-
 	scoreText.text = "Score: " + currentScore;
 	scoreText.regX = scoreText.getBounds().width;
 	scoreText.x = w;
@@ -108,8 +102,8 @@ function clickBeefParts(event, i) {
 		nextProblem();
 		currentScore += 10;
         createjs.Tween.get(niku)
-            .to({x: customer[count % CUSTOMER_NUM].x, y: customer[count % CUSTOMER_NUM].y}, 400)
-            .to({x: customer[count % CUSTOMER_NUM].x, y: customer[count % CUSTOMER_NUM].y}, 200)
+            .to({x: customer[count % CUSTOMER_NUM].x - 200, y: customer[count % CUSTOMER_NUM].y}, 400)
+            .to({x: customer[count % CUSTOMER_NUM].x - 200, y: customer[count % CUSTOMER_NUM].y}, 200)
             .to({x: w * 0.5 ,y: h*0.6}, 10);
 	} else {
     	createjs.Sound.play("mowmow");  
@@ -122,6 +116,27 @@ function clickBeefParts(event, i) {
 function nextProblem(event) {
     now++;
     count++;
+
+    if(now >= MAX) {
+        questions = generateProblem(MAX);
+        now = 0;
+    }
+
+    for(var i = 0; i < CUSTOMER_NUM; i++) {
+        if(i == count % CUSTOMER_NUM) {
+            customer[i].x = w * 0.8 + 200;
+            customer[i].visible = true;
+            createjs.Tween.get(customer[i]).to({x:w * 0.8}, 200, createjs.Ease.cubicOut)
+        } else {
+            customer[i].visible = false;
+        }
+    }
+    questionText.text = jpQuests[quests[questions[now]]];
+    questionText.regX = questionText.getBounds().width / 2;
+    questionText.regY = questionText.getBounds().height / 2;
+    questionText.y = h * 0.15 + 60;
+    questionText.alpha = 0;
+    createjs.Tween.get(questionText).to({alpha: 1, y: h * 0.15 + 50}, 300, createjs.Ease.cubicOut);
 }
 
 const jpQuests = {
@@ -158,7 +173,6 @@ function problemInit() {
         customer[i].scaleY = 0.2;
         customer[i].regX = customer[i].getBounds().width / 2;
         customer[i].regY = customer[i].getBounds().height / 2;
-        customer[i].x = w * 0.8;
         customer[i].y = h * 0.2 + 50;
         stage.addChild(customer[i]);
     }
@@ -173,17 +187,9 @@ function problemInit() {
     questionText.y = h * 0.15 + 50;
     stage.addChild(balloon);
     stage.addChild(questionText);
+    nextProblem();
 }
 
-function problemUpdate(id) {
-    for(var i = 0; i < CUSTOMER_NUM; i++) {
-        customer[i].visible = false;
-    }
-    customer[count % CUSTOMER_NUM].visible = true;
-    questionText.text = jpQuests[quests[id]];
-    questionText.regX = questionText.getBounds().width / 2;
-    questionText.regY = questionText.getBounds().height / 2;
-}
 var remainSec;
 var passageId;
 var timerText;
