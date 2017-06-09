@@ -17,7 +17,7 @@ const quest = [
 function generateProblem(num) {
 	var problems = new Array();
 	for (var i = 0 ; i < num; i++){
-		var rand = Math.floor( Math.random()*14);
+		var rand = Math.floor(Math.random() * 14);
 		problems.push(rand)
 	}
 	return problems;
