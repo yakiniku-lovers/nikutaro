@@ -41,6 +41,7 @@ function init() {
 	
 	scoreText = new createjs.Text("", "20px Arial", "#000000");
 	stage.addChild(scoreText);
+    startShowTimer(30);
 }
 
 function handleComplete() {
