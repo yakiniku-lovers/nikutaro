@@ -5,7 +5,7 @@ const quests = [
 ];
 
 var stage, w, h, loader;
-var beef, balloon, questionText, questions, currentScore = 0;
+var beef, balloon, questionText, niku, questions, currentScore = 0;
 var customer = new Array();
 const MAX = 10; //問題数
 const CUSTOMER_NUM = 8;
@@ -19,6 +19,7 @@ function init() {
 
     var manifest = [
         {src: "beef.jpg", id: "beef"},
+        {src: "niku.png", id: "niku"},
         {src: "customer0.png", id: "customer0"},
         {src: "customer1.png", id: "customer1"},
         {src: "customer2.png", id: "customer2"},
@@ -45,6 +46,11 @@ function init() {
 }
 
 function handleComplete() {
+    niku = new createjs.Bitmap(loader.getResult("niku"));
+    niku.x = w * 0.5;
+    niku.y = h * 0.6;
+    stage.addChild(niku);
+
     beef = new createjs.Bitmap(loader.getResult("beef"));
     beef.regX = beef.getBounds().width / 2;
     beef.regY = beef.getBounds().height / 2;
@@ -73,7 +79,7 @@ function handleComplete() {
     balloon = new createjs.Bitmap(loader.getResult("balloon"));
     problemInit();
 
-    stage.addChild(beef);
+    // stage.addChild(beef);
     createjs.Ticker.addEventListener("tick", tick);
 }
 
@@ -101,6 +107,10 @@ function clickBeefParts(event, i) {
 	if (i == questions[now]){
 		nextProblem();
 		currentScore += 10;
+        createjs.Tween.get(niku)
+            .to({x: customer[count % CUSTOMER_NUM].x, y: customer[count % CUSTOMER_NUM].y}, 400)
+            .to({x: customer[count % CUSTOMER_NUM].x, y: customer[count % CUSTOMER_NUM].y}, 200)
+            .to({x: w * 0.5 ,y: h*0.6}, 10);
 	} else {
     	createjs.Sound.play("mowmow");  
 		currentScore -= 50;
