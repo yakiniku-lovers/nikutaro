@@ -52,3 +52,29 @@ function generateProblem(num) {
 	}
 	return problems;
 }
+
+var remainSec;
+var passageId;
+var timerText;
+
+function updateTimer() {
+  timerText.text = remainSec / 10;
+  if(remainSec <= 0.0){
+    stopTimer();
+  }
+  remainSec--;
+}
+
+function startShowTimer(initialSecond) {
+  remainSec = initialSecond * 10;
+  timerText = new createjs.Text("", "24px sans-serif", "DarkRed");
+  timerText.text = remainSec / 10;
+  stage.addChild(timerText);
+  passageId = setInterval('updateTimer()', 100);
+}
+
+function stopTimer(){
+  clearInterval(passageId);
+  //write next scene
+}
+
