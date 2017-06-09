@@ -1,15 +1,13 @@
 var stage, w, h, loader;
 var beef, balloon, questionText, questions;
-var now = 0;
-const MAX = 100; //問題数
+const MAX = 10; //問題数
+var now = MAX;
 window.addEventListener("load", init); 
 
 function init() { 
     stage = new createjs.Stage("nikutaro");
     w = stage.canvas.width;
     h = stage.canvas.height;
-
-    questions = generateProblem(MAX);
 
     var manifest = [
         {src: "beef.jpg", id: "beef"},
@@ -41,6 +39,10 @@ function handleComplete() {
 }
 
 function tick(event) {
+    if(now >= MAX) {
+        questions = generateProblem(MAX);
+        now = 0;
+    }
     problemUpdate(questions[now]);
 	stage.update(event);
 }
