@@ -201,5 +201,7 @@ function stopTimer(){
   resultText = new createjs.Text(currentScore+"点", "100px Arial", "#105099");
   resultText.x = w/2;
   resultText.y = h/2;
+  resultText.regX = resultText.getBounds().width / 2;
+  resultText.regY = resultText.getBounds().height / 2;
   stage.addChild(resultText);
 }
