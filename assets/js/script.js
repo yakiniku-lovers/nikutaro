@@ -8,7 +8,7 @@ function init() {
     stage.update();
 }
 
-const quest = [
+const quests = [
   "Neck","Shoulder","Tombi","Misuji","ShoulderLoin","RibLoin",
   "Sirloin","Fillet","Bara","Uchimomo","Shintama","Sotomomo","Lampu",
   "Ichibo","Sune"
@@ -17,7 +17,7 @@ const quest = [
 function generateProblem(num) {
 	var problems = new Array();
 	for (var i = 0 ; i < num; i++){
-		var rand = Math.floor(Math.random() * 14);
+		var rand = Math.floor(Math.random() * quests.length);
 		problems.push(rand)
 	}
 	return problems;
