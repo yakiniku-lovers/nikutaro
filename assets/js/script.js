@@ -1,6 +1,5 @@
 var stage, w, h, loader;
-var beef;
-var problem;
+var beef, balloon, questionText;
 window.addEventListener("load", init); 
 
 function init() { 
@@ -10,7 +9,8 @@ function init() {
 
     var manifest = [
         {src: "beef.jpg", id: "beef"},
-        {src: "customer1.png", id: "customer1"}
+        {src: "customer1.png", id: "customer1"},
+        {src: "balloon.png", id: "balloon"}
     ];
 
     loader = new createjs.LoadQueue(false);
@@ -27,16 +27,16 @@ function handleComplete() {
     beef.y = h * 0.7;
 
     customer1 = new createjs.Bitmap(loader.getResult("customer1"));
-    problem = new Problem();
+    balloon = new createjs.Bitmap(loader.getResult("balloon"));
+    problemInit();
 
-    stage.addChild(customer1);
     stage.addChild(beef);
     beef.addEventListener("click", sayMoo);
     createjs.Ticker.addEventListener("tick", tick);
 }
 
 function tick(event) {
-    problem.update();
+    problemUpdate(1);
 	stage.update(event);
 }
 
@@ -60,15 +60,29 @@ function generateProblem(num) {
 	return problems;
 }
 
-class Problem {
-    constructor() {
-        customer1.scaleX = 0.2;
-        customer1.scaleY = 0.2;
-        customer1.regX = customer1.getBounds().width / 2;
-        customer1.regY = customer1.getBounds().height / 2;
-        customer1.x = w * 0.8;
-        customer1.y = h * 0.2;
-    }
-    update(id) {
-    }
+function problemInit() {
+    customer1.scaleX = 0.2;
+    customer1.scaleY = 0.2;
+    customer1.regX = customer1.getBounds().width / 2;
+    customer1.regY = customer1.getBounds().height / 2;
+    customer1.x = w * 0.8;
+    customer1.y = h * 0.2;
+    balloon.scaleX = 0.8;
+    balloon.scaleY = 0.8;
+    balloon.regX = balloon.getBounds().width / 2;
+    balloon.regY = balloon.getBounds().height / 2;
+    balloon.x = w * 0.4;
+    balloon.y = h * 0.15;
+    questionText = new createjs.Text("", "20px Arial", "#000000");
+    questionText.x = w * 0.37;
+    questionText.y = h * 0.15;
+    stage.addChild(customer1);
+    stage.addChild(balloon);
+    stage.addChild(questionText);
+}
+
+function problemUpdate(id) {
+    questionText.text = quests[id];
+    questionText.regX = questionText.getBounds().width / 2;
+    questionText.regY = questionText.getBounds().height / 2;
 }
