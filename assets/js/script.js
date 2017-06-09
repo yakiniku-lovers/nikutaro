@@ -16,13 +16,10 @@ function init() {
     var manifest = [
         {src: "beef.jpg", id: "beef"}
     ];
-    console.log(quests);
 
     for(var i = 0; i < quests.length; i++) {
         manifest.push({src: "beef_parts/"+quests[i]+".png", id: quests[i]});
     }
-
-    console.log(manifest);
 
     loader = new createjs.LoadQueue(false);
     loader.addEventListener("complete", handleComplete);
@@ -69,7 +66,7 @@ function sayMoo(event){
 
 function clickBeefParts(event, i) {
     createjs.Sound.play("mowmow");  
-    console.dir(i); 
+    console.dir(i);
 }
 
 function generateProblem(num) {
