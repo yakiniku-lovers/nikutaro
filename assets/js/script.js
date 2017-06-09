@@ -11,7 +11,7 @@ const SCENES = {
 }
 
 var stage, w, h, loader;
-var beef, balloon, questionText, questions, currentScore = 0, scene;
+var beef, balloon, questionText, niku, questions, currentScore = 0, scene;
 var customer = new Array();
 const MAX = 10; //問題数
 const CUSTOMER_NUM = 8;
@@ -24,7 +24,8 @@ function init() {
     h = stage.canvas.height;
 
     var manifest = [
-        {src: "beef.jpg", id: "beef"},
+        {src: "beef.png", id: "beef"},
+        {src: "niku.png", id: "niku"},
         {src: "customer0.png", id: "customer0"},
         {src: "customer1.png", id: "customer1"},
         {src: "customer2.png", id: "customer2"},
@@ -64,6 +65,12 @@ function handleComplete() {
 function gameStart() {
     scene = SCENES["game"];
     stage.removeAllChildren();
+
+    niku = new createjs.Bitmap(loader.getResult("niku"));
+    niku.x = w * 0.5;
+    niku.y = h * 0.6;
+    stage.addChild(niku);
+
     beef = new createjs.Bitmap(loader.getResult("beef"));
     beef.regX = beef.getBounds().width / 2;
     beef.regY = beef.getBounds().height / 2;
@@ -117,6 +124,10 @@ function clickBeefParts(event, i) {
 	if (i == questions[now]){
 		nextProblem();
 		currentScore += 10;
+        createjs.Tween.get(niku)
+            .to({x: customer[count % CUSTOMER_NUM].x - 200, y: customer[count % CUSTOMER_NUM].y}, 400)
+            .to({x: customer[count % CUSTOMER_NUM].x - 200, y: customer[count % CUSTOMER_NUM].y}, 200)
+            .to({x: w * 0.5 ,y: h*0.6}, 10);
 	} else {
     	createjs.Sound.play("mowmow");  
 		currentScore -= 50;
@@ -207,7 +218,7 @@ var passageId;
 var timerText;
 
 function updateTimer() {
-  timerText.text = remainSec / 10;
+  timerText.text = (remainSec / 10).toFixed(1);
   if(remainSec <= 0.0){
     stopTimer();
   }
