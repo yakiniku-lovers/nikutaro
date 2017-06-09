@@ -42,7 +42,6 @@ function handleComplete() {
             part.regY = beef.getBounds().height / 2;
             part.x = w * 0.5;
             part.y = h * 0.7;
-            // beefParts.push(part);
             stage.addChild(part);
             part.addEventListener("click", function(event){
                 clickBeefParts(event, i);
