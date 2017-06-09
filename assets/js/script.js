@@ -60,6 +60,24 @@ const quests = [
   "Ichibo","Sune"
 ];
 
+const jpQuests = {
+    Neck: "ネック",
+    Shoulder: "肩",
+    Tombi: "トンビ",
+    Misuji: "ミスジ",
+    ShoulderLoin: "肩ロース",
+    RibLoin: "リブロース",
+    Sirloin: "サーロイン",
+    Fillet: "ヒレ",
+    Bara: "バラ",
+    Uchimomo: "うちもも",
+    Shintama: "しんたま",
+    Sotomomo: "そともも",
+    Lampu: "ランプ",
+    Ichibo: "イチボ",
+    Sune: "すね"
+}
+
 function generateProblem(num) {
 	var problems = new Array();
 	for (var i = 0 ; i < num; i++){
@@ -91,7 +109,7 @@ function problemInit() {
 }
 
 function problemUpdate(id) {
-    questionText.text = quests[id];
+    questionText.text = jpQuests[quests[id]];
     questionText.regX = questionText.getBounds().width / 2;
     questionText.regY = questionText.getBounds().height / 2;
 }
