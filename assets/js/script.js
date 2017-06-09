@@ -79,7 +79,6 @@ function handleComplete() {
     balloon = new createjs.Bitmap(loader.getResult("balloon"));
     problemInit();
 
-    // stage.addChild(beef);
     createjs.Ticker.addEventListener("tick", tick);
 }
 
