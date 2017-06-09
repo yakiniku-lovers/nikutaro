@@ -1,5 +1,6 @@
 var stage, w, h, loader;
 var beef;
+var problem;
 window.addEventListener("load", init); 
 
 function init() { 
@@ -8,7 +9,8 @@ function init() {
     h = stage.canvas.height;
 
     var manifest = [
-        {src: "beef.jpg", id: "beef"}
+        {src: "beef.jpg", id: "beef"},
+        {src: "customer1.png", id: "customer1"}
     ];
 
     loader = new createjs.LoadQueue(false);
@@ -24,12 +26,17 @@ function handleComplete() {
     beef.x = w * 0.5;
     beef.y = h * 0.7;
 
+    customer1 = new createjs.Bitmap(loader.getResult("customer1"));
+    problem = new Problem();
+
+    stage.addChild(customer1);
     stage.addChild(beef);
     beef.addEventListener("click", sayMoo);
     createjs.Ticker.addEventListener("tick", tick);
 }
 
 function tick(event) {
+    problem.update();
 	stage.update(event);
 }
 
@@ -51,4 +58,17 @@ function generateProblem(num) {
 		problems.push(rand)
 	}
 	return problems;
+}
+
+class Problem {
+    constructor() {
+        customer1.scaleX = 0.2;
+        customer1.scaleY = 0.2;
+        customer1.regX = customer1.getBounds().width / 2;
+        customer1.regY = customer1.getBounds().height / 2;
+        customer1.x = w * 0.8;
+        customer1.y = h * 0.2;
+    }
+    update(id) {
+    }
 }
