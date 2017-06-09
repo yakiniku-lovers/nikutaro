@@ -23,3 +23,12 @@ const Sotomomo = 11;
 const Lampu = 12;
 const Ichibo = 13;
 const Sune = 14;
+
+function generateProblem(num) {
+	var problems = new Array();
+	for (var i = 0 ; i < num; i++){
+		var rand = Math.floor( Math.random()*14);
+		problems.push(rand)
+	}
+	return problems;
+}
