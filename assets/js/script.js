@@ -35,7 +35,7 @@ function tick(event) {
 
 function sayMoo(event){
     // "mowmow"は後でconstに追加
-	createjs.Sound.play("mowmow");
+    createjs.Sound.play("mowmow");
 }
 
 const quests = [
