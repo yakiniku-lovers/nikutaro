@@ -37,3 +37,18 @@ function sayMoo(event){
     // "mowmow"は後でconstに追加
 	createjs.Sound.play("mowmow");
 }
+
+const quests = [
+  "Neck","Shoulder","Tombi","Misuji","ShoulderLoin","RibLoin",
+  "Sirloin","Fillet","Bara","Uchimomo","Shintama","Sotomomo","Lampu",
+  "Ichibo","Sune"
+];
+
+function generateProblem(num) {
+	var problems = new Array();
+	for (var i = 0 ; i < num; i++){
+		var rand = Math.floor(Math.random() * quests.length);
+		problems.push(rand)
+	}
+	return problems;
+}
