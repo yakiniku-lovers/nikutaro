@@ -4,8 +4,14 @@ const quests = [
   "Ichibo","Sune","ShoulderBara"
 ];
 
+const SCENES = {
+    start: 0,
+    game: 1,
+    result: 2,
+};
+
 var stage, w, h, loader;
-var beef, balloon, questionText, niku, questions, currentScore = 0;
+var beef, balloon, questionText, niku, questions, currentScore = 0, scene;
 var customer = new Array();
 const MAX = 10; //問題数
 const CUSTOMER_NUM = 8;
@@ -39,13 +45,27 @@ function init() {
     loader.addEventListener("complete", handleComplete);
     loader.loadManifest(manifest, true, "./assets/images/");
     createjs.Sound.registerSound("./assets/sounds/mowmow.mp3", "mowmow");
-	
-	scoreText = new createjs.Text("", "20px Arial", "#000000");
-	stage.addChild(scoreText);
-    startShowTimer(30);
 }
 
 function handleComplete() {
+    scene = SCENES.start;
+    var startText = new createjs.Text("START", "100px Arial", "#105099");
+    startText.x = w/2;
+    startText.y = h/2;
+    startText.regX = startText.getBounds().width / 2;
+    startText.regY = startText.getBounds().height / 2;
+    var backRect = new createjs.Shape();
+    backRect.graphics.beginFill("#ffffff").drawRect(0, 0, w, h);
+    backRect.addEventListener("click", gameStart);
+    stage.addChild(backRect);
+    stage.addChild(startText);
+    createjs.Ticker.addEventListener("tick", tick);
+}
+
+function gameStart() {
+    scene = SCENES.game;
+    stage.removeAllChildren();
+
     niku = new createjs.Bitmap(loader.getResult("niku"));
     niku.x = w * 0.5;
     niku.y = h * 0.6;
@@ -71,22 +91,26 @@ function handleComplete() {
             });            
         })(i, stage);
     }
-    stage.addChild(beef);
-
     for(var i = 0; i < CUSTOMER_NUM; i++) {
         customer[i] = new createjs.Bitmap(loader.getResult("customer" + i));
     }
     balloon = new createjs.Bitmap(loader.getResult("balloon"));
     problemInit();
 
-    createjs.Ticker.addEventListener("tick", tick);
+	scoreText = new createjs.Text("", "20px Arial", "#000000");
+	stage.addChild(scoreText);
+    startShowTimer(30);
+
+    stage.addChild(beef);
 }
 
 function tick(event) {
-	scoreText.text = "Score: " + currentScore;
-	scoreText.regX = scoreText.getBounds().width;
-	scoreText.x = w;
-	scoreText.y = 10;
+    if(scene == SCENES.game) {
+        scoreText.text = "Score: " + currentScore;
+        scoreText.regX = scoreText.getBounds().width;
+        scoreText.x = w;
+        scoreText.y = 10;
+    }
 	
 	stage.update(event);
 }
@@ -213,6 +237,7 @@ function stopTimer(){
   clearInterval(passageId);
   //write next scene
   stage.removeAllChildren();
+  scene = SCENES.result;
   resultText = new createjs.Text(currentScore+"点", "100px Arial", "#105099");
   resultText.x = w/2;
   resultText.y = h/2;
