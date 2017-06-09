@@ -8,7 +8,7 @@ const SCENES = {
     start: 0,
     game: 1,
     result: 2,
-}
+};
 
 var stage, w, h, loader;
 var beef, balloon, questionText, niku, questions, currentScore = 0, scene;
@@ -48,7 +48,7 @@ function init() {
 }
 
 function handleComplete() {
-    scene = SCENES["start"];
+    scene = SCENES.start;
     var startText = new createjs.Text("START", "100px Arial", "#105099");
     startText.x = w/2;
     startText.y = h/2;
@@ -63,7 +63,7 @@ function handleComplete() {
 }
 
 function gameStart() {
-    scene = SCENES["game"];
+    scene = SCENES.game;
     stage.removeAllChildren();
 
     niku = new createjs.Bitmap(loader.getResult("niku"));
@@ -105,7 +105,7 @@ function gameStart() {
 }
 
 function tick(event) {
-    if(scene == SCENES["game"]) {
+    if(scene == SCENES.game) {
         scoreText.text = "Score: " + currentScore;
         scoreText.regX = scoreText.getBounds().width;
         scoreText.x = w;
@@ -237,7 +237,7 @@ function stopTimer(){
   clearInterval(passageId);
   //write next scene
   stage.removeAllChildren();
-  scene = SCENES["result"];
+  scene = SCENES.result;
   resultText = new createjs.Text(currentScore+"点", "100px Arial", "#105099");
   resultText.x = w/2;
   resultText.y = h/2;
