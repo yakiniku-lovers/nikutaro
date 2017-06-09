@@ -197,4 +197,7 @@ function startShowTimer(initialSecond) {
 function stopTimer(){
   clearInterval(passageId);
   //write next scene
+  stage.removeAllChildren();
+  resultText = new createjs.Text(currentScore+"点", "20px Arial", "#000000");
+  stage.addChild(resultText);
 }
