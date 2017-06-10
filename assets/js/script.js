@@ -165,7 +165,7 @@ function problemInit() {
         clickBeefParts(event, -1);
     });
     
-    questionText = new createjs.Text("", "20px Arial", "#000000");
+    questionText = new createjs.Text("", "40px Arial", "#000000");
     questionText.x = w * 0.37;
     questionText.y = h * 0.15 + 50;
     
