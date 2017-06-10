@@ -274,7 +274,7 @@ function checkExtendTimeGage() {
 function nextProblem(no_change_customer) {
     Status.quizId++;
     Status.quizCount++;
-
+    
     if (no_change_customer != true){
         Status.customerSkinId = (Status.customerSkinId + 1) % CONFIG.NUM_OF_CUSTOMER;
     }
