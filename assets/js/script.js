@@ -111,7 +111,7 @@ function handleComplete() {
     
     var backRect = new createjs.Shape();
     backRect.graphics.beginFill("#ffffff").drawRect(0, 0, w, h);
-    backRect.addEventListener("click", gameStart);
+    backRect.addEventListener("click", countDown);
     
     stage.addChild(backRect);
     stage.addChild(logoText);
@@ -149,6 +149,23 @@ function problemInit() {
     stage.addChild(questionText);
     
     nextProblem();
+}
+
+function countDown() {
+    stage.removeAllChildren();
+    var countDownText = new createjs.Text("3", "100px Arial", "#C92525");
+    countDownText.x = w * 0.5;
+    countDownText.y = h * 0.5;
+    countDownText.regX = countDownText.getBounds().width / 2;
+    countDownText.regY = countDownText.getBounds().height / 2;
+    stage.addChild(countDownText);
+    createjs.Tween.get(countDownText)
+        .wait(1000)
+        .to({text: "2"})
+        .wait(1000)
+        .to({text: "1"})
+        .wait(1000)
+        .call(gameStart);
 }
 
 function gameStart() {
