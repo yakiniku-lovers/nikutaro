@@ -337,6 +337,8 @@ function stopTimer(){
     stage.addChild(resultText);
 
     repeat = new createjs.Bitmap(loader.getResult("repeat"));
+    repeat.hitArea = new createjs.Shape();
+    repeat.hitArea.graphics.beginFill("#FFFFFF").drawRect(repeat.x, repeat.y, repeat.getBounds().width, repeat.getBounds().height);
     repeat.scaleX = 0.3;
     repeat.scaleY = 0.3;
     repeat.y = h-repeat.getBounds().height/2;
