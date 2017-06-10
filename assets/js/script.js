@@ -294,7 +294,7 @@ function nextProblem(no_change_customer) {
         }
     }
     
-    if (Math.random() * 100 < Math.atan(Status.quizCount / 10) / (Math.PI / 2) * 0.2 && Status.quizCount >= 5){
+    if (Math.random() < Math.atan(Status.quizCount / 10) / (Math.PI / 2) * 0.2 && Status.quizCount >= 5){
         questionText.text = traps[Math.floor(Math.random() * traps.length)];
         Status.questions[Status.quizId] = -1;
     } else {
