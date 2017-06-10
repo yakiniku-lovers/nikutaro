@@ -116,7 +116,7 @@ function handleComplete() {
             .to({alpha: 1}, 1000);
     
     var backRect = new createjs.Shape();
-    backRect.graphics.beginFill("#ffffff").drawRect(0, 0, w, h);
+    backRect.graphics.beginFill("#FFFFFF").drawRect(0, 0, w, h);
     backRect.addEventListener("click", countDown);
     
     stage.addChild(backRect);
@@ -233,7 +233,7 @@ function gameStart() {
 
     for (var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
         circleGage[i] = new createjs.Shape();
-        circleGage[i].graphics.beginFill("#ff0000").drawCircle(80 + i * 25, 12, 10);
+        circleGage[i].graphics.beginFill("#FF0000").drawCircle(80 + i * 25, 12, 10);
         circleGage[i].alpha = 0.2;
         stage.addChild(circleGage[i]);
     }
@@ -402,7 +402,7 @@ function stopTimer(){
     setCentering(tweetButton);
 
     var tweetRect = new createjs.Shape();
-    tweetRect.graphics.beginFill("#1da1f2").drawRect(tweetButton.x-100, tweetButton.y-25, 190, 50);
+    tweetRect.graphics.beginFill("#1DA1F2").drawRect(tweetButton.x-100, tweetButton.y-25, 190, 50);
     tweetRect.addEventListener("click", jumpTwitter);
     stage.addChild(tweetRect);
     stage.addChild(tweetButton);
