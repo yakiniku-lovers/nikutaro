@@ -66,19 +66,15 @@ function init() {
     var manifest = [
         {src: "beef.png", id: "beef"},
         {src: "niku.png", id: "niku"},
-        {src: "customer0.png", id: "customer0"},
-        {src: "customer1.png", id: "customer1"},
-        {src: "customer2.png", id: "customer2"},
-        {src: "customer3.png", id: "customer3"},
-        {src: "customer4.png", id: "customer4"},
-        {src: "customer5.png", id: "customer5"},
-        {src: "customer6.png", id: "customer6"},
-        {src: "customer7.png", id: "customer7"},
         {src: "balloon.png", id: "balloon"},
         {src: "repeat.png", id: "repeat"},
         {src: "ha.png", id: "ha"}
     ];
     
+    for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
+        manifest.push({src: "customer"+i+".png", id: "customer"+i});
+    }
+
     for(var i = 0; i < quests.length; i++) {
         manifest.push({src: "beef_parts/"+quests[i]+".png", id: quests[i]});
     }
