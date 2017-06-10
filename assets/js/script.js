@@ -229,8 +229,15 @@ function clickBeefParts(event, i) {
         Status.extendTimeGage += 1;
         if (Status.questions[Status.quizId] >= 0){
             createjs.Tween.get(niku)
-                .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 200)
-                .wait(200)
+                .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 150)
+                .call(function (){
+                    for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
+                        if(i == Status.customerSkinId) {
+                            createjs.Tween.get(customer[i]).to({x: 0},200);
+                        }
+                    }
+                })
+                .wait(100)
                 .to({x: w * 0.5 ,y: h*0.6}, 10)
                 .call(nextProblem);
         } else {
@@ -271,7 +278,7 @@ function checkExtendTimeGage() {
 function nextProblem(no_change_customer) {
     Status.quizId++;
     Status.quizCount++;
-    
+
     if (no_change_customer != true){
         Status.customerSkinId = (Status.customerSkinId + 1) % CONFIG.NUM_OF_CUSTOMER;
     }
