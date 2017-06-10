@@ -242,7 +242,7 @@ function gameStart() {
 
     for (var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
         circleGage[i] = new createjs.Shape();
-        circleGage[i].graphics.beginFill("#ff0000").drawCircle(80 + i * 25, 12, 10);
+        circleGage[i].graphics.beginFill("#ff0000").drawCircle(90 + i * 25, 25, 10);
         circleGage[i].alpha = 0.2;
         stage.addChild(circleGage[i]);
     }
@@ -261,8 +261,9 @@ function tick(event) {
     if(scene == SCENES.game) {
         scoreText.text = "Score: " + Status.score;
         scoreText.regX = scoreText.getBounds().width;
-        scoreText.x = w;
-        scoreText.y = 10;
+        scoreText.regY = scoreText.getBounds().height;
+        scoreText.x = w - 15;
+        scoreText.y = 30;
     }
     
     stage.update(event);
@@ -384,6 +385,9 @@ function startShowTimer(timeLimitBySec) {
     
     timerText = new createjs.Text("", "24px sans-serif", "DarkRed");
     timerText.text = Status.remainSec / 10;
+    timerText.regY = timerText.getBounds().height / 2;
+    timerText.x = 15;
+    timerText.y = 25;
     
     passageId = setInterval('updateTimer()', 100);
     
