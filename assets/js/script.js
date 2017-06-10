@@ -227,8 +227,17 @@ function checkExtendTimeGage() {
     }
 
     if(Status.extendTimeGage == 5) {
+        var interval = 200;
         Status.extendTimeGage = 0;
         Status.remainSec += CONFIG.TIME_OF_EXTEND_BY_SEC * 10;
+        for(var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
+             createjs.Tween.get(circleGage[i])
+                .to({alpha: 0.2}, interval)
+                .to({alpha: 1.0}, interval)
+                .to({alpha: 0.2}, interval)
+                .to({alpha: 1.0}, interval)
+                .to({alpha: 0.2}, interval);
+        }
     }
 }
 
