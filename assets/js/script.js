@@ -29,6 +29,8 @@ const jpQuests = {
     ShoulderBara: "肩バラ"
 };
 
+const traps = ["扁", "トンピ", "ミミズ", "扁ロース", "リプロース", "パラ", "砂ずり", "肩パラ", "セセリ", "胸肉", "ササミ", "手羽元", "手羽先", "サエズリ", "ハツ", "ヤゲン", "砂肝"];
+
 const CONFIG = {
     NUM_OF_QUIZ_PER_LEVEL_UP: 10,
     NUM_OF_CUSTOMER: 8,
@@ -45,12 +47,14 @@ Status = {
 };
 
 var stage, w, h, loader;
-var beef, balloon, questionText, niku, questions, scene;
+var beef, balloon, questionText, niku, questions, scene, ha;
 var customer = new Array();
 
 window.addEventListener("load", init); 
 
 function init() { 
+    createjs.Ticker.setFPS(60);
+    
     stage = new createjs.Stage("nikutaro");
     w = stage.canvas.width;
     h = stage.canvas.height;
@@ -66,7 +70,8 @@ function init() {
         {src: "customer5.png", id: "customer5"},
         {src: "customer6.png", id: "customer6"},
         {src: "customer7.png", id: "customer7"},
-        {src: "balloon.png", id: "balloon"}
+        {src: "balloon.png", id: "balloon"},
+        {src: "ha.png", id: "ha"},
     ];
     
     for(var i = 0; i < quests.length; i++) {
@@ -121,12 +126,27 @@ function problemInit() {
     balloon.x = w * 0.4;
     balloon.y = h * 0.15 + 50;
     
+    ha = new createjs.Bitmap(loader.getResult("ha"));
+    ha.scaleX = 0.8;
+    ha.scaleY = 0.8;
+    ha.regX = ha.getBounds().width / 2;
+    ha.regY = ha.getBounds().height / 2;
+    ha.x = w * 0.12;
+    ha.y = h * 0.8;
+    ha.addEventListener('click', function(event){
+        createjs.Tween.get(event.target)
+            .to({scaleX: 1.2, scaleY: 1.2, rotation: 20}, 100)
+            .to({scaleX: 0.8, scaleY: 0.8, rotation: 0}, 100);
+        clickBeefParts(event, -1);
+    });
+    
     questionText = new createjs.Text("", "20px Arial", "#000000");
     questionText.x = w * 0.37;
     questionText.y = h * 0.15 + 50;
     
     stage.addChild(balloon);
     stage.addChild(questionText);
+    stage.addChild(ha);
     
     nextProblem();
 }
@@ -193,38 +213,53 @@ function clickBeefParts(event, i) {
         createjs.Sound.play("mow");  
         Status.score += 10;
         
-        nextProblem();
-        createjs.Tween.get(niku)
-            .to({x: customer[Status.customerSkinId].x - 200, y: customer[Status.customerSkinId].y}, 400)
-            .to({x: customer[Status.customerSkinId].x - 200, y: customer[Status.customerSkinId].y}, 200)
-            .to({x: w * 0.5 ,y: h*0.6}, 10);
+        if (Status.questions[Status.quizId] >= 0){
+            nextProblem(false);
+            createjs.Tween.get(niku)
+                .to({x: customer[Status.customerSkinId].x - 200, y: customer[Status.customerSkinId].y}, 400)
+                .to({x: customer[Status.customerSkinId].x - 200, y: customer[Status.customerSkinId].y}, 200)
+                .to({x: w * 0.5 ,y: h*0.6}, 10);
+        } else {
+            nextProblem(true);
+        }
+        
     } else {
         createjs.Sound.play("mowmow");  
         Status.score -= 50;
     }
 }
 
-function nextProblem(event) {
+function nextProblem(no_change_customer) {
     Status.quizId++;
     Status.quizCount++;
-    Status.customerSkinId = (Status.customerSkinId + 1) % CONFIG.NUM_OF_CUSTOMER;
+    
+    if (no_change_customer != true){
+        Status.customerSkinId = (Status.customerSkinId + 1) % CONFIG.NUM_OF_CUSTOMER;
+    }
     
     if(Status.quizId >= CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP) {
         Status.questions = generateProblem(CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
         Status.quizId = 0;
     }
     
-    for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
-        if(i == Status.customerSkinId) {
-            customer[i].x = w * 0.8 + 200;
-            customer[i].visible = true;
-            createjs.Tween.get(customer[i]).to({x:w * 0.8}, 200, createjs.Ease.cubicOut)
-        } else {
-            customer[i].visible = false;
+    if (no_change_customer != true){
+        for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
+            if(i == Status.customerSkinId) {
+                customer[i].x = w * 0.8 + 200;
+                customer[i].visible = true;
+                createjs.Tween.get(customer[i]).to({x:w * 0.8}, 200, createjs.Ease.cubicOut)
+            } else {
+                customer[i].visible = false;
+            }
         }
     }
     
-    questionText.text = jpQuests[quests[Status.questions[Status.quizId]]];
+    if (Math.random() * 100 < 10 && Status.quizCount >= 5){
+        questionText.text = traps[Math.floor(Math.random() * traps.length)];
+        Status.questions[Status.quizId] = -1;
+    } else {
+        questionText.text = jpQuests[quests[Status.questions[Status.quizId]]];
+    }
     questionText.regX = questionText.getBounds().width / 2;
     questionText.regY = questionText.getBounds().height / 2;
     questionText.y = h * 0.15 + 60;
