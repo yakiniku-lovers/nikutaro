@@ -36,7 +36,7 @@ const CONFIG = {
     NUM_OF_CUSTOMER: 8,
     NUM_OF_EXTEND_TIME: 5,
     TIME_OF_EXTEND_BY_SEC: 5,
-    TIME_LIMIT_BY_SEC: 30,
+    TIME_LIMIT_BY_SEC: 3,
 };
 
 Status = {
@@ -361,13 +361,13 @@ function stopTimer(){
     createjs.Sound.play("result");
 
     var tweetButton = new createjs.Text("ツイートする", "25px Arial", "#FFFFFF");
-    tweetButton.x = w/2;
+    tweetButton.x = w/2 + 110;
     tweetButton.y = h/2 + 150;
     tweetButton.regX = tweetButton.getBounds().width / 2;
     tweetButton.regY = tweetButton.getBounds().height / 2;
 
     var tweetRect = new createjs.Shape();
-    tweetRect.graphics.beginFill("#1da1f2").drawRect(tweetButton.x-90, tweetButton.y-20, 190, 50);
+    tweetRect.graphics.beginFill("#1da1f2").drawRect(tweetButton.x-100, tweetButton.y-25, 190, 50);
     tweetRect.addEventListener("click", jumpTwitter);
     stage.addChild(tweetRect);
     stage.addChild(tweetButton);
@@ -377,9 +377,10 @@ function stopTimer(){
     repeat = new createjs.Bitmap(loader.getResult("repeat"));
     repeat.hitArea = new createjs.Shape();
     repeat.hitArea.graphics.beginFill("#FFFFFF").drawRect(repeat.x, repeat.y, repeat.getBounds().width, repeat.getBounds().height);
-    repeat.scaleX = 0.3;
-    repeat.scaleY = 0.3;
-    repeat.y = h-repeat.getBounds().height/2;
+    repeat.y = h-repeat.getBounds().height/2-90;
+    repeat.x = 150;
+    repeat.scaleX = 0.8;
+    repeat.scaleY = 0.8;
     repeat.addEventListener("click",jumpStart);
     stage.addChild(repeat);
 }
