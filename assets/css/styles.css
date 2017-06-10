@@ -1,0 +1,27 @@
+* {
+	padding: 0;
+	margin: 0;
+}
+
+html {
+	width: 100%;
+}
+
+body {
+	width: 100vw;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+	display: flex;
+	
+	background-color: rgb(245, 245, 245);
+}
+
+.container {
+	display: flex-item;
+	box-shadow: 0 0 40px rgb(255, 255, 255);
+}
+
+#nikutaro {
+	background-color: rgb(255, 255, 255);
+}
