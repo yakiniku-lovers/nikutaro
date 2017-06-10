@@ -229,12 +229,12 @@ function clickBeefParts(event, i) {
         Status.extendTimeGage += 1;
         if (Status.questions[Status.quizId] >= 0){
             createjs.Tween.get(niku)
-                .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 150)
+                .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 120)
                 .call(function (){
-                    createjs.Tween.get(customer[Status.customerSkinId]).to({x: 0},200);
+                    createjs.Tween.get(customer[Status.customerSkinId]).to({x: 0}, 200);
                 })
-                .wait(100)
-                .to({x: w * 0.5 ,y: h*0.6}, 10)
+                .to({x: w * 0.5 ,y: h*0.6})
+                .wait(120)
                 .call(nextProblem);
         } else {
             nextProblem(true);
