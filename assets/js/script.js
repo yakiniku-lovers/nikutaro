@@ -70,7 +70,8 @@ function init() {
         {src: "customer5.png", id: "customer5"},
         {src: "customer6.png", id: "customer6"},
         {src: "customer7.png", id: "customer7"},
-        {src: "balloon.png", id: "balloon"}
+        {src: "balloon.png", id: "balloon"},
+        {src: "repeat.png", id: "repeat"}
     ];
     
     for(var i = 0; i < quests.length; i++) {
@@ -84,6 +85,7 @@ function init() {
     createjs.Sound.registerSound("./assets/sounds/mowmow.mp3", "mowmow");
     createjs.Sound.registerSound("./assets/sounds/mow.mp3", "mow");
     createjs.Sound.registerSound("./assets/sounds/bgm.mp3", "bgm");
+    createjs.Sound.registerSound("./assets/sounds/result.mp3", "result");
 }
 
 function handleComplete() {
@@ -318,6 +320,8 @@ function stopTimer(){
     resultText.regX = resultText.getBounds().width / 2;
     resultText.regY = resultText.getBounds().height / 2;
 
+    createjs.Sound.play("result");
+
     var tweetButton = new createjs.Text("ツイートする", "25px Arial", "#FFFFFF");
     tweetButton.x = w/2;
     tweetButton.y = h/2 + 150;
@@ -331,7 +335,18 @@ function stopTimer(){
     stage.addChild(tweetButton);
     
     stage.addChild(resultText);
+
+    repeat = new createjs.Bitmap(loader.getResult("repeat"));
+    repeat.scaleX = 0.3;
+    repeat.scaleY = 0.3;
+    repeat.y = h-repeat.getBounds().height/2;
+    repeat.addEventListener("click",jumpStart);
+    stage.addChild(repeat);
 }
 function jumpTwitter(event) {
     window.open("https://twitter.com/intent/tweet?hashtags=%E7%B2%BE%E8%82%89%E5%B1%8B%E3%81%95%E3%82%93%E8%82%89%E5%A4%AA%E9%83%8E&ref_src=twsrc%5Etfw&text="+Status.score+"%E7%82%B9%E3%82%92%E5%8F%96%E3%81%A3%E3%81%A6%E3%82%84%E3%81%A3%E3%81%9F%E3%81%9C%EF%BC%81&tw_p=tweetbutton");
+}
+
+function jumpStart(event) {
+    window.location.href = 'index.html';
 }
