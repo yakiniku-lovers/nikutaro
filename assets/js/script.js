@@ -84,6 +84,8 @@ function init() {
     createjs.Sound.registerSound("./assets/sounds/mowmow.mp3", "mowmow");
     createjs.Sound.registerSound("./assets/sounds/mow.mp3", "mow");
     createjs.Sound.registerSound("./assets/sounds/bgm.mp3", "bgm");
+    createjs.Sound.registerSound("./assets/sounds/count-down.mp3", "countDown");
+    createjs.Sound.registerSound("./assets/sounds/start.mp3", "start");
 }
 
 function handleComplete() {
@@ -160,12 +162,19 @@ function countDown() {
     countDownText.regY = countDownText.getBounds().height / 2;
     stage.addChild(countDownText);
     createjs.Tween.get(countDownText)
+        .call(countDownSound)
         .wait(1000)
         .to({text: "2"})
+        .call(countDownSound)
         .wait(1000)
         .to({text: "1"})
+        .call(countDownSound)
         .wait(1000)
         .call(gameStart);
+}
+
+function countDownSound() {
+    createjs.Sound.play("countDown");
 }
 
 function gameStart() {
@@ -214,6 +223,7 @@ function gameStart() {
     
     var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
     createjs.Sound.play("bgm", ppc);
+    createjs.Sound.play("start");
     
     startShowTimer(CONFIG.TIME_LIMIT_BY_SEC);
     
