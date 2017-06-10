@@ -89,17 +89,33 @@ function init() {
 function handleComplete() {
     scene = SCENES.start;
     
-    var startText = new createjs.Text("START", "100px Arial", "#105099");
-    startText.x = w/2;
-    startText.y = h/2;
+    var logoText = new createjs.Text("精肉屋さん肉太郎", "60px Arial", "#C92525");
+    logoText.x = w * 0.5;
+    logoText.y = h * 0.2;
+    logoText.regX = logoText.getBounds().width / 2;
+    logoText.regY = logoText.getBounds().height / 2;
+    var descriptionText = new createjs.Text("お客さんが注文する部位をクリックしてください。\n部位が存在しなければ「は？」と言って大丈夫です。", "20px Arial", "#000000");
+    descriptionText.lineHeight = 40;
+    descriptionText.textAlign = "center";
+    descriptionText.x = w * 0.5;
+    descriptionText.y = h * 0.55;
+    descriptionText.regY = descriptionText.getBounds().height / 2;
+    var startText = new createjs.Text("画面クリックでスタート", "40px Arial", "#105099");
+    startText.x = w * 0.5;
+    startText.y = h * 0.8;
     startText.regX = startText.getBounds().width / 2;
     startText.regY = startText.getBounds().height / 2;
+    createjs.Tween.get(startText, {loop:true})
+            .to({alpha: 0}, 1000)
+            .to({alpha: 1}, 1000);
     
     var backRect = new createjs.Shape();
     backRect.graphics.beginFill("#ffffff").drawRect(0, 0, w, h);
     backRect.addEventListener("click", gameStart);
     
     stage.addChild(backRect);
+    stage.addChild(logoText);
+    stage.addChild(descriptionText);
     stage.addChild(startText);
     
     createjs.Ticker.addEventListener("tick", tick);
