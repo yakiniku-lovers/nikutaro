@@ -89,22 +89,40 @@ function init() {
     createjs.Sound.registerSound("./assets/sounds/mowmow.mp3", "mowmow");
     createjs.Sound.registerSound("./assets/sounds/mow.mp3", "mow");
     createjs.Sound.registerSound("./assets/sounds/bgm.mp3", "bgm");
+    createjs.Sound.registerSound("./assets/sounds/count-down.mp3", "countDown");
+    createjs.Sound.registerSound("./assets/sounds/start.mp3", "start");
 }
 
 function handleComplete() {
     scene = SCENES.start;
     
-    var startText = new createjs.Text("START", "100px Arial", "#105099");
-    startText.x = w/2;
-    startText.y = h/2;
+    var logoText = new createjs.Text("精肉屋さん肉太郎", "60px Arial", "#C92525");
+    logoText.x = w * 0.5;
+    logoText.y = h * 0.2;
+    logoText.regX = logoText.getBounds().width / 2;
+    logoText.regY = logoText.getBounds().height / 2;
+    var descriptionText = new createjs.Text("お客さんが注文する部位をクリックしてください。\n部位が存在しなければ「は？」と言って大丈夫です。", "20px Arial", "#000000");
+    descriptionText.lineHeight = 40;
+    descriptionText.textAlign = "center";
+    descriptionText.x = w * 0.5;
+    descriptionText.y = h * 0.55;
+    descriptionText.regY = descriptionText.getBounds().height / 2;
+    var startText = new createjs.Text("画面クリックでスタート", "40px Arial", "#105099");
+    startText.x = w * 0.5;
+    startText.y = h * 0.8;
     startText.regX = startText.getBounds().width / 2;
     startText.regY = startText.getBounds().height / 2;
+    createjs.Tween.get(startText, {loop:true})
+            .to({alpha: 0}, 1000)
+            .to({alpha: 1}, 1000);
     
     var backRect = new createjs.Shape();
     backRect.graphics.beginFill("#ffffff").drawRect(0, 0, w, h);
-    backRect.addEventListener("click", gameStart);
+    backRect.addEventListener("click", countDown);
     
     stage.addChild(backRect);
+    stage.addChild(logoText);
+    stage.addChild(descriptionText);
     stage.addChild(startText);
     
     createjs.Ticker.addEventListener("tick", tick);
@@ -157,6 +175,30 @@ function problemInit() {
     nextProblem();
 }
 
+function countDown() {
+    stage.removeAllChildren();
+    var countDownText = new createjs.Text("3", "100px Arial", "#C92525");
+    countDownText.x = w * 0.5;
+    countDownText.y = h * 0.5;
+    countDownText.regX = countDownText.getBounds().width / 2;
+    countDownText.regY = countDownText.getBounds().height / 2;
+    stage.addChild(countDownText);
+    createjs.Tween.get(countDownText)
+        .call(countDownSound)
+        .wait(1000)
+        .to({text: "2"})
+        .call(countDownSound)
+        .wait(1000)
+        .to({text: "1"})
+        .call(countDownSound)
+        .wait(1000)
+        .call(gameStart);
+}
+
+function countDownSound() {
+    createjs.Sound.play("countDown");
+}
+
 function gameStart() {
     scene = SCENES.game;
     stage.removeAllChildren();
@@ -204,6 +246,7 @@ function gameStart() {
     
     var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
     createjs.Sound.play("bgm", ppc);
+    createjs.Sound.play("start");
     
     startShowTimer(CONFIG.TIME_LIMIT_BY_SEC);
     
