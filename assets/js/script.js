@@ -36,7 +36,7 @@ const CONFIG = {
     NUM_OF_CUSTOMER: 8,
     NUM_OF_EXTEND_TIME: 5,
     TIME_OF_EXTEND_BY_SEC: 5,
-    TIME_LIMIT_BY_SEC: 3,
+    TIME_LIMIT_BY_SEC: 30,
 };
 
 Status = {
