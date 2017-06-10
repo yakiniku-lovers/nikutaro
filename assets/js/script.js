@@ -32,6 +32,7 @@ const jpQuests = {
 const CONFIG = {
     NUM_OF_QUIZ_PER_LEVEL_UP: 10,
     NUM_OF_CUSTOMER: 8,
+    NUM_OF_EXTEND_TIME: 5,
     TIME_LIMIT_BY_SEC: 30,
 };
 
@@ -167,6 +168,13 @@ function gameStart() {
     problemInit();
     
     scoreText = new createjs.Text("", "20px Arial", "#000000");
+
+    for (var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
+        var circle = new createjs.Shape();
+        circle.graphics.beginFill("#ff0000").drawCircle(80 + i * 25, 12, 10);
+        circle.alpha = 0.2;
+        stage.addChild(circle);
+    }
     
     var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
     createjs.Sound.play("bgm", ppc);
