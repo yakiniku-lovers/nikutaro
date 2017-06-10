@@ -45,6 +45,7 @@ function init() {
     loader.addEventListener("complete", handleComplete);
     loader.loadManifest(manifest, true, "./assets/images/");
     createjs.Sound.registerSound("./assets/sounds/mowmow.mp3", "mowmow");
+    createjs.Sound.registerSound("./assets/sounds/bgm.mp3", "bgm");
 }
 
 function handleComplete() {
@@ -102,6 +103,9 @@ function gameStart() {
     startShowTimer(30);
 
     stage.addChild(beef);
+
+    var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
+    createjs.Sound.play("bgm", ppc);
 }
 
 function tick(event) {
@@ -236,6 +240,7 @@ function startShowTimer(initialSecond) {
 function stopTimer(){
   clearInterval(passageId);
   //write next scene
+  createjs.Sound.stop("bgm");
   stage.removeAllChildren();
   scene = SCENES.result;
   resultText = new createjs.Text(currentScore+"点", "100px Arial", "#105099");
