@@ -32,6 +32,8 @@ const jpQuests = {
 const CONFIG = {
     NUM_OF_QUIZ_PER_LEVEL_UP: 10,
     NUM_OF_CUSTOMER: 8,
+    NUM_OF_EXTEND_TIME: 5,
+    TIME_OF_EXTEND_BY_SEC: 5,
     TIME_LIMIT_BY_SEC: 30,
 };
 
@@ -41,12 +43,14 @@ Status = {
     quizCount: 0,
     customerSkinId: 0,
     remainSec: 0,
+    extendTimeGage: 0,
     questions: new Array(),
 };
 
 var stage, w, h, loader;
 var beef, balloon, questionText, niku, questions, scene;
 var customer = new Array();
+var circleGage = new Array();
 
 window.addEventListener("load", init); 
 
@@ -167,6 +171,13 @@ function gameStart() {
     problemInit();
     
     scoreText = new createjs.Text("", "20px Arial", "#000000");
+
+    for (var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
+        circleGage[i] = new createjs.Shape();
+        circleGage[i].graphics.beginFill("#ff0000").drawCircle(80 + i * 25, 12, 10);
+        circleGage[i].alpha = 0.2;
+        stage.addChild(circleGage[i]);
+    }
     
     var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
     createjs.Sound.play("bgm", ppc);
@@ -192,15 +203,41 @@ function clickBeefParts(event, i) {
     if (i == Status.questions[Status.quizId]){
         createjs.Sound.play("mow");  
         Status.score += 10;
-        
+        Status.extendTimeGage += 1;
         nextProblem();
         createjs.Tween.get(niku)
             .to({x: customer[Status.customerSkinId].x - 200, y: customer[Status.customerSkinId].y}, 400)
             .to({x: customer[Status.customerSkinId].x - 200, y: customer[Status.customerSkinId].y}, 200)
             .to({x: w * 0.5 ,y: h*0.6}, 10);
     } else {
+        Status.extendTimeGage = 0;
         createjs.Sound.play("mowmow");  
         Status.score -= 50;
+    }
+    checkExtendTimeGage();
+}
+
+function checkExtendTimeGage() {
+    for(var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
+        if(i < Status.extendTimeGage) {
+            circleGage[i].alpha = 1;
+        } else {
+            circleGage[i].alpha = 0.2;            
+        }
+    }
+
+    if(Status.extendTimeGage == 5) {
+        var interval = 200;
+        Status.extendTimeGage = 0;
+        Status.remainSec += CONFIG.TIME_OF_EXTEND_BY_SEC * 10;
+        for(var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
+             createjs.Tween.get(circleGage[i])
+                .to({alpha: 0.2}, interval)
+                .to({alpha: 1.0}, interval)
+                .to({alpha: 0.2}, interval)
+                .to({alpha: 1.0}, interval)
+                .to({alpha: 0.2}, interval);
+        }
     }
 }
 
