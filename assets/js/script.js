@@ -135,6 +135,12 @@ function gameStart() {
     scene = SCENES.game;
     stage.removeAllChildren();
     
+    for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
+        customer[i] = new createjs.Bitmap(loader.getResult("customer" + i));
+    }
+    
+    problemInit();
+
     niku = new createjs.Bitmap(loader.getResult("niku"));
     niku.x = w * 0.5;
     niku.y = h * 0.6;
@@ -160,11 +166,6 @@ function gameStart() {
         })(i, stage);
     }
     
-    for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
-        customer[i] = new createjs.Bitmap(loader.getResult("customer" + i));
-    }
-    
-    problemInit();
     
     scoreText = new createjs.Text("", "20px Arial", "#000000");
     
@@ -192,12 +193,13 @@ function clickBeefParts(event, i) {
     if (i == Status.questions[Status.quizId]){
         createjs.Sound.play("mow");  
         Status.score += 10;
-        
-        nextProblem();
+
         createjs.Tween.get(niku)
-            .to({x: customer[Status.customerSkinId].x - 200, y: customer[Status.customerSkinId].y}, 400)
-            .to({x: customer[Status.customerSkinId].x - 200, y: customer[Status.customerSkinId].y}, 200)
-            .to({x: w * 0.5 ,y: h*0.6}, 10);
+            .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 200)
+            .wait(200)
+            .to({x: w * 0.5 ,y: h*0.6}, 10)
+            .call(nextProblem);
+
     } else {
         createjs.Sound.play("mowmow");  
         Status.score -= 50;
@@ -218,7 +220,7 @@ function nextProblem(event) {
         if(i == Status.customerSkinId) {
             customer[i].x = w * 0.8 + 200;
             customer[i].visible = true;
-            createjs.Tween.get(customer[i]).to({x:w * 0.8}, 200, createjs.Ease.cubicOut)
+            createjs.Tween.get(customer[i]).to({x:w * 0.8}, 200, createjs.Ease.cubicOut);
         } else {
             customer[i].visible = false;
         }
