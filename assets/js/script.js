@@ -98,19 +98,19 @@ function handleComplete() {
     var logoText = new createjs.Text("精肉屋さん肉太郎", "60px Arial", "#C92525");
     logoText.x = w * 0.5;
     logoText.y = h * 0.2;
-    logoText.regX = logoText.getBounds().width / 2;
-    logoText.regY = logoText.getBounds().height / 2;
+    setCentering(logoText);
+
     var descriptionText = new createjs.Text("お客さんが注文する部位をクリックしてください。\n部位が存在しなければ「は？」と言って大丈夫です。", "20px Arial", "#000000");
     descriptionText.lineHeight = 40;
     descriptionText.textAlign = "center";
     descriptionText.x = w * 0.5;
     descriptionText.y = h * 0.55;
     descriptionText.regY = descriptionText.getBounds().height / 2;
+
     var startText = new createjs.Text("画面クリックでスタート", "40px Arial", "#105099");
     startText.x = w * 0.5;
     startText.y = h * 0.8;
-    startText.regX = startText.getBounds().width / 2;
-    startText.regY = startText.getBounds().height / 2;
+    setCentering(startText);
     createjs.Tween.get(startText, {loop:true})
             .to({alpha: 0}, 1000)
             .to({alpha: 1}, 1000);
@@ -133,8 +133,7 @@ function problemInit() {
     for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
         customer[i].scaleX = 0.2;
         customer[i].scaleY = 0.2;
-        customer[i].regX = customer[i].getBounds().width / 2;
-        customer[i].regY = customer[i].getBounds().height / 2;
+        setCentering(customer[i]);
         customer[i].y = h * 0.2 + 50;
         stage.addChild(customer[i]);
     }
@@ -142,8 +141,7 @@ function problemInit() {
     balloon = new createjs.Bitmap(loader.getResult("balloon"));
     balloon.scaleX = 0.8;
     balloon.scaleY = 0.8;
-    balloon.regX = balloon.getBounds().width / 2;
-    balloon.regY = balloon.getBounds().height / 2;
+    setCentering(balloon);
     balloon.x = w * 0.4;
     balloon.y = h * 0.15 + 50;
     
@@ -152,8 +150,7 @@ function problemInit() {
     ha.hitArea.graphics.beginFill("#FFFFFF").drawRect(0, 0, 128, 128);
     ha.scaleX = 0.8;
     ha.scaleY = 0.8;
-    ha.regX = ha.getBounds().width / 2;
-    ha.regY = ha.getBounds().height / 2;
+    setCentering(ha);
     ha.x = w * 0.12;
     ha.y = h * 0.8;
     ha.addEventListener('click', function(event){
@@ -179,8 +176,7 @@ function countDown() {
     var countDownText = new createjs.Text("3", "100px Arial", "#C92525");
     countDownText.x = w * 0.5;
     countDownText.y = h * 0.5;
-    countDownText.regX = countDownText.getBounds().width / 2;
-    countDownText.regY = countDownText.getBounds().height / 2;
+    setCentering(countDownText);
     stage.addChild(countDownText);
     createjs.Tween.get(countDownText)
         .call(countDownSound)
@@ -214,8 +210,7 @@ function gameStart() {
     stage.addChild(niku);
     
     beef = new createjs.Bitmap(loader.getResult("beef"));
-    beef.regX = beef.getBounds().width / 2;
-    beef.regY = beef.getBounds().height / 2;
+    setCentering(beef);
     beef.x = w * 0.5;
     beef.y = h * 0.7;
     
@@ -345,8 +340,7 @@ function nextProblem(no_change_customer) {
     } else {
         questionText.text = jpQuests[quests[Status.questions[Status.quizId]]];
     }
-    questionText.regX = questionText.getBounds().width / 2;
-    questionText.regY = questionText.getBounds().height / 2;
+    setCentering(questionText);
     questionText.y = h * 0.15 + 60;
     questionText.alpha = 0;
     
@@ -398,16 +392,14 @@ function stopTimer(){
     resultText = new createjs.Text(Status.score+"点", "100px Arial", "#105099");
     resultText.x = w/2;
     resultText.y = h/2;
-    resultText.regX = resultText.getBounds().width / 2;
-    resultText.regY = resultText.getBounds().height / 2;
+    setCentering(resultText);
 
     createjs.Sound.play("result");
 
     var tweetButton = new createjs.Text("ツイートする", "25px Arial", "#FFFFFF");
     tweetButton.x = w/2 + 110;
     tweetButton.y = h/2 + 150;
-    tweetButton.regX = tweetButton.getBounds().width / 2;
-    tweetButton.regY = tweetButton.getBounds().height / 2;
+    setCentering(tweetButton);
 
     var tweetRect = new createjs.Shape();
     tweetRect.graphics.beginFill("#1da1f2").drawRect(tweetButton.x-100, tweetButton.y-25, 190, 50);
@@ -433,4 +425,9 @@ function jumpTwitter(event) {
 
 function jumpStart(event) {
     window.location.href = 'index.html';
+}
+
+function setCentering(object) {
+    object.regX = object.getBounds().width / 2;
+    object.regY = object.getBounds().height / 2;
 }
