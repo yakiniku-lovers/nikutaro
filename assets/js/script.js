@@ -42,12 +42,14 @@ Status = {
     quizCount: 0,
     customerSkinId: 0,
     remainSec: 0,
+    extendTimeGage: 0,
     questions: new Array(),
 };
 
 var stage, w, h, loader;
 var beef, balloon, questionText, niku, questions, scene;
 var customer = new Array();
+var circleGage = new Array();
 
 window.addEventListener("load", init); 
 
@@ -170,10 +172,10 @@ function gameStart() {
     scoreText = new createjs.Text("", "20px Arial", "#000000");
 
     for (var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
-        var circle = new createjs.Shape();
-        circle.graphics.beginFill("#ff0000").drawCircle(80 + i * 25, 12, 10);
-        circle.alpha = 0.2;
-        stage.addChild(circle);
+        circleGage[i] = new createjs.Shape();
+        circleGage[i].graphics.beginFill("#ff0000").drawCircle(80 + i * 25, 12, 10);
+        circleGage[i].alpha = 0.2;
+        stage.addChild(circleGage[i]);
     }
     
     var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
@@ -200,15 +202,27 @@ function clickBeefParts(event, i) {
     if (i == Status.questions[Status.quizId]){
         createjs.Sound.play("mow");  
         Status.score += 10;
-        
+        Status.extendTimeGage += 1;
         nextProblem();
         createjs.Tween.get(niku)
             .to({x: customer[Status.customerSkinId].x - 200, y: customer[Status.customerSkinId].y}, 400)
             .to({x: customer[Status.customerSkinId].x - 200, y: customer[Status.customerSkinId].y}, 200)
             .to({x: w * 0.5 ,y: h*0.6}, 10);
     } else {
+        Status.extendTimeGage = 0;
         createjs.Sound.play("mowmow");  
         Status.score -= 50;
+    }
+    checkExtendTimeGage();
+}
+
+function checkExtendTimeGage() {
+    for(var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
+        if(i < Status.extendTimeGage) {
+            circleGage[i].alpha = 1;
+        } else {
+            circleGage[i].alpha = 0.2;            
+        }
     }
 }
 
