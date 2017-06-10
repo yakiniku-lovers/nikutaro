@@ -27,22 +27,22 @@ const jpQuests = {
     Ichibo: "イチボ",
     Sune: "すね",
     ShoulderBara: "肩バラ"
-}
+};
 
 const CONFIG = {
     NUM_OF_QUIZ_PER_LEVEL_UP: 10,
     NUM_OF_CUSTOMER: 8,
     TIME_LIMIT_BY_SEC: 30,
-}
+};
 
-STATUS = {
+Status = {
     score: 0,
     quizId: 0,
     quizCount: 0,
     customerSkinId: 0,
     remainSec: 0,
     questions: new Array(),
-}
+};
 
 var stage, w, h, loader;
 var beef, balloon, questionText, niku, questions, scene;
@@ -102,7 +102,7 @@ function handleComplete() {
 }
 
 function problemInit() {
-    STATUS.questions = generateProblem(CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
+    Status.questions = generateProblem(CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
     
     for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
         customer[i].scaleX = 0.2;
@@ -179,7 +179,7 @@ function gameStart() {
 
 function tick(event) {
     if(scene == SCENES.game) {
-        scoreText.text = "Score: " + STATUS.score;
+        scoreText.text = "Score: " + Status.score;
         scoreText.regX = scoreText.getBounds().width;
         scoreText.x = w;
         scoreText.y = 10;
@@ -189,33 +189,33 @@ function tick(event) {
 }
 
 function clickBeefParts(event, i) {
-    if (i == STATUS.questions[STATUS.quizId]){
+    if (i == Status.questions[Status.quizId]){
         createjs.Sound.play("mow");  
-        STATUS.score += 10;
+        Status.score += 10;
         
         nextProblem();
         createjs.Tween.get(niku)
-            .to({x: customer[STATUS.customerSkinId].x - 200, y: customer[STATUS.customerSkinId].y}, 400)
-            .to({x: customer[STATUS.customerSkinId].x - 200, y: customer[STATUS.customerSkinId].y}, 200)
+            .to({x: customer[Status.customerSkinId].x - 200, y: customer[Status.customerSkinId].y}, 400)
+            .to({x: customer[Status.customerSkinId].x - 200, y: customer[Status.customerSkinId].y}, 200)
             .to({x: w * 0.5 ,y: h*0.6}, 10);
     } else {
         createjs.Sound.play("mowmow");  
-        STATUS.score -= 50;
+        Status.score -= 50;
     }
 }
 
 function nextProblem(event) {
-    STATUS.quizId++;
-    STATUS.quizCount++;
-    STATUS.customerSkinId = (STATUS.customerSkinId + 1) % CONFIG.NUM_OF_CUSTOMER;
+    Status.quizId++;
+    Status.quizCount++;
+    Status.customerSkinId = (Status.customerSkinId + 1) % CONFIG.NUM_OF_CUSTOMER;
 
-    if(STATUS.quizId >= CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP) {
-        STATUS.questions = generateProblem(CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
-        STATUS.quizId = 0;
+    if(Status.quizId >= CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP) {
+        Status.questions = generateProblem(CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
+        Status.quizId = 0;
     }
 
     for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
-        if(i == STATUS.customerSkinId) {
+        if(i == Status.customerSkinId) {
             customer[i].x = w * 0.8 + 200;
             customer[i].visible = true;
             createjs.Tween.get(customer[i]).to({x:w * 0.8}, 200, createjs.Ease.cubicOut)
@@ -224,7 +224,7 @@ function nextProblem(event) {
         }
     }
     
-    questionText.text = jpQuests[quests[STATUS.questions[STATUS.quizId]]];
+    questionText.text = jpQuests[quests[Status.questions[Status.quizId]]];
     questionText.regX = questionText.getBounds().width / 2;
     questionText.regY = questionText.getBounds().height / 2;
     questionText.y = h * 0.15 + 60;
@@ -246,20 +246,20 @@ var passageId;
 var timerText;
 
 function updateTimer() {
-    timerText.text = (STATUS.remainSec / 10).toFixed(1);
+    timerText.text = (Status.remainSec / 10).toFixed(1);
     
-    if(STATUS.remainSec <= 0.0){
+    if(Status.remainSec <= 0.0){
         stopTimer();
     }
     
-    STATUS.remainSec--;
+    Status.remainSec--;
 }
 
 function startShowTimer(timeLimitBySec) {
-    STATUS.remainSec = timeLimitBySec * 10;
+    Status.remainSec = timeLimitBySec * 10;
     
     timerText = new createjs.Text("", "24px sans-serif", "DarkRed");
-    timerText.text = STATUS.remainSec / 10;
+    timerText.text = Status.remainSec / 10;
     
     passageId = setInterval('updateTimer()', 100);
     
@@ -275,7 +275,7 @@ function stopTimer(){
     stage.removeAllChildren();
     scene = SCENES.result;
     
-    resultText = new createjs.Text(STATUS.score+"点", "100px Arial", "#105099");
+    resultText = new createjs.Text(Status.score+"点", "100px Arial", "#105099");
     resultText.x = w/2;
     resultText.y = h/2;
     resultText.regX = resultText.getBounds().width / 2;
