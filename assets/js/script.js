@@ -33,6 +33,7 @@ const CONFIG = {
     NUM_OF_QUIZ_PER_LEVEL_UP: 10,
     NUM_OF_CUSTOMER: 8,
     NUM_OF_EXTEND_TIME: 5,
+    TIME_OF_EXTEND_BY_SEC: 5,
     TIME_LIMIT_BY_SEC: 30,
 };
 
@@ -223,6 +224,11 @@ function checkExtendTimeGage() {
         } else {
             circleGage[i].alpha = 0.2;            
         }
+    }
+
+    if(Status.extendTimeGage == 5) {
+        Status.extendTimeGage = 0;
+        Status.remainSec += CONFIG.TIME_OF_EXTEND_BY_SEC * 10;
     }
 }
 
