@@ -32,6 +32,8 @@ const jpQuests = {
 const CONFIG = {
     NUM_OF_QUIZ_PER_LEVEL_UP: 10,
     NUM_OF_CUSTOMER: 8,
+    NUM_OF_EXTEND_TIME: 5,
+    TIME_OF_EXTEND_BY_SEC: 5,
     TIME_LIMIT_BY_SEC: 30,
 };
 
@@ -41,12 +43,14 @@ Status = {
     quizCount: 0,
     customerSkinId: 0,
     remainSec: 0,
+    extendTimeGage: 0,
     questions: new Array(),
 };
 
 var stage, w, h, loader;
 var beef, balloon, questionText, niku, questions, scene;
 var customer = new Array();
+var circleGage = new Array();
 
 window.addEventListener("load", init); 
 
@@ -168,6 +172,13 @@ function gameStart() {
     
     
     scoreText = new createjs.Text("", "20px Arial", "#000000");
+
+    for (var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
+        circleGage[i] = new createjs.Shape();
+        circleGage[i].graphics.beginFill("#ff0000").drawCircle(80 + i * 25, 12, 10);
+        circleGage[i].alpha = 0.2;
+        stage.addChild(circleGage[i]);
+    }
     
     var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
     createjs.Sound.play("bgm", ppc);
@@ -194,6 +205,7 @@ function clickBeefParts(event, i) {
         createjs.Sound.play("mow");  
         Status.score += 10;
 
+        Status.extendTimeGage += 1;
         createjs.Tween.get(niku)
             .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 200)
             .wait(200)
@@ -201,8 +213,34 @@ function clickBeefParts(event, i) {
             .call(nextProblem);
 
     } else {
+        Status.extendTimeGage = 0;
         createjs.Sound.play("mowmow");  
         Status.score -= 50;
+    }
+    checkExtendTimeGage();
+}
+
+function checkExtendTimeGage() {
+    for(var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
+        if(i < Status.extendTimeGage) {
+            circleGage[i].alpha = 1;
+        } else {
+            circleGage[i].alpha = 0.2;            
+        }
+    }
+
+    if(Status.extendTimeGage == 5) {
+        var interval = 200;
+        Status.extendTimeGage = 0;
+        Status.remainSec += CONFIG.TIME_OF_EXTEND_BY_SEC * 10;
+        for(var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
+             createjs.Tween.get(circleGage[i])
+                .to({alpha: 0.2}, interval)
+                .to({alpha: 1.0}, interval)
+                .to({alpha: 0.2}, interval)
+                .to({alpha: 1.0}, interval)
+                .to({alpha: 0.2}, interval);
+        }
     }
 }
 
@@ -282,6 +320,21 @@ function stopTimer(){
     resultText.y = h/2;
     resultText.regX = resultText.getBounds().width / 2;
     resultText.regY = resultText.getBounds().height / 2;
+
+    var tweetButton = new createjs.Text("ツイートする", "25px Arial", "#FFFFFF");
+    tweetButton.x = w/2;
+    tweetButton.y = h/2 + 150;
+    tweetButton.regX = tweetButton.getBounds().width / 2;
+    tweetButton.regY = tweetButton.getBounds().height / 2;
+
+    var tweetRect = new createjs.Shape();
+    tweetRect.graphics.beginFill("#1da1f2").drawRect(tweetButton.x-90, tweetButton.y-20, 190, 50);
+    tweetRect.addEventListener("click", jumpTwitter);
+    stage.addChild(tweetRect);
+    stage.addChild(tweetButton);
     
     stage.addChild(resultText);
+}
+function jumpTwitter(event) {
+    window.open("https://twitter.com/intent/tweet?hashtags=%E7%B2%BE%E8%82%89%E5%B1%8B%E3%81%95%E3%82%93%E8%82%89%E5%A4%AA%E9%83%8E&ref_src=twsrc%5Etfw&text="+Status.score+"%E7%82%B9%E3%82%92%E5%8F%96%E3%81%A3%E3%81%A6%E3%82%84%E3%81%A3%E3%81%9F%E3%81%9C%EF%BC%81&tw_p=tweetbutton");
 }
