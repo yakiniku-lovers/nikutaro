@@ -231,11 +231,7 @@ function clickBeefParts(event, i) {
             createjs.Tween.get(niku)
                 .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 150)
                 .call(function (){
-                    for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
-                        if(i == Status.customerSkinId) {
-                            createjs.Tween.get(customer[i]).to({x: 0},200);
-                        }
-                    }
+                    createjs.Tween.get(customer[Status.customerSkinId]).to({x: 0},200);
                 })
                 .wait(100)
                 .to({x: w * 0.5 ,y: h*0.6}, 10)
