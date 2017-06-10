@@ -75,11 +75,8 @@ function init() {
         {src: "customer6.png", id: "customer6"},
         {src: "customer7.png", id: "customer7"},
         {src: "balloon.png", id: "balloon"},
-<<<<<<< HEAD
         {src: "repeat.png", id: "repeat"}
-=======
         {src: "ha.png", id: "ha"},
->>>>>>> master
     ];
     
     for(var i = 0; i < quests.length; i++) {
