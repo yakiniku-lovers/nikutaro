@@ -127,6 +127,8 @@ function problemInit() {
     balloon.y = h * 0.15 + 50;
     
     ha = new createjs.Bitmap(loader.getResult("ha"));
+    ha.hitArea = new createjs.Shape();
+    ha.hitArea.graphics.beginFill("#FFFFFF").drawRect(0, 0, 128, 128);
     ha.scaleX = 0.8;
     ha.scaleY = 0.8;
     ha.regX = ha.getBounds().width / 2;
@@ -254,7 +256,7 @@ function nextProblem(no_change_customer) {
         }
     }
     
-    if (Math.random() * 100 < 10 && Status.quizCount >= 5){
+    if (Math.random() * 100 < Math.atan(Status.quizCount / 10) / (Math.PI / 2) * 0.2 && Status.quizCount >= 5){
         questionText.text = traps[Math.floor(Math.random() * traps.length)];
         Status.questions[Status.quizId] = -1;
     } else {
