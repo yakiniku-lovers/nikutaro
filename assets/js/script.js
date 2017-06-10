@@ -219,4 +219,20 @@ function stopTimer(){
   resultText.regX = resultText.getBounds().width / 2;
   resultText.regY = resultText.getBounds().height / 2;
   stage.addChild(resultText);
+
+  var tweetButton = new createjs.Text("ツイートする", "25px Arial", "#FFFFFF");
+  tweetButton.x = w/2;
+  tweetButton.y = h/2 + 150;
+  tweetButton.regX = tweetButton.getBounds().width / 2;
+  tweetButton.regY = tweetButton.getBounds().height / 2;
+
+  var tweetRect = new createjs.Shape();
+  tweetRect.graphics.beginFill("#1da1f2").drawRect(tweetButton.x-90, tweetButton.y-20, 190, 50);
+  tweetRect.addEventListener("click", jumpTwitter);
+  stage.addChild(tweetRect);
+  stage.addChild(tweetButton);
+}
+
+function jumpTwitter(event) {
+    window.open("https://twitter.com/intent/tweet?hashtags=%E7%B2%BE%E8%82%89%E5%B1%8B%E3%81%95%E3%82%93%E8%82%89%E5%A4%AA%E9%83%8E&ref_src=twsrc%5Etfw&text="+currentScore+"%E7%82%B9%E3%82%92%E5%8F%96%E3%81%A3%E3%81%A6%E3%82%84%E3%81%A3%E3%81%9F%E3%81%9C%EF%BC%81&tw_p=tweetbutton");
 }
