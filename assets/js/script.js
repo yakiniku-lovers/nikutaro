@@ -89,6 +89,7 @@ function init() {
     createjs.Sound.registerSound("./assets/sounds/mowmow.mp3", "mowmow");
     createjs.Sound.registerSound("./assets/sounds/mow.mp3", "mow");
     createjs.Sound.registerSound("./assets/sounds/bgm.mp3", "bgm");
+    createjs.Sound.registerSound("./assets/sounds/sen_ge_panchi11.mp3", "ha-sound");
     createjs.Sound.registerSound("./assets/sounds/count-down.mp3", "countDown");
     createjs.Sound.registerSound("./assets/sounds/start.mp3", "start");
 }
@@ -267,10 +268,10 @@ function tick(event) {
 
 function clickBeefParts(event, i) {
     if (i == Status.questions[Status.quizId]){
-        createjs.Sound.play("mow");  
         Status.score += 10;
         Status.extendTimeGage += 1;
         if (Status.questions[Status.quizId] >= 0){
+            createjs.Sound.play("mow");
             createjs.Tween.get(niku)
                 .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 120)
                 .call(function (){
@@ -280,6 +281,7 @@ function clickBeefParts(event, i) {
                 .wait(120)
                 .call(nextProblem);
         } else {
+            createjs.Sound.play("ha-sound");
             nextProblem(true);
         }
     } else {
