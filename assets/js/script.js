@@ -242,7 +242,7 @@ function gameStart() {
 
     for (var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
         circleGage[i] = new createjs.Shape();
-        circleGage[i].graphics.beginFill("#ff0000").drawCircle(80 + i * 25, 12, 10);
+        circleGage[i].graphics.beginFill("#ff0000").drawCircle(90 + i * 25, 25, 10);
         circleGage[i].alpha = 0.2;
         stage.addChild(circleGage[i]);
     }
@@ -261,8 +261,9 @@ function tick(event) {
     if(scene == SCENES.game) {
         scoreText.text = "Score: " + Status.score;
         scoreText.regX = scoreText.getBounds().width;
-        scoreText.x = w;
-        scoreText.y = 10;
+        scoreText.regY = scoreText.getBounds().height;
+        scoreText.x = w - 15;
+        scoreText.y = 30;
     }
     
     stage.update(event);
@@ -384,6 +385,9 @@ function startShowTimer(timeLimitBySec) {
     
     timerText = new createjs.Text("", "24px sans-serif", "DarkRed");
     timerText.text = Status.remainSec / 10;
+    timerText.regY = timerText.getBounds().height / 2;
+    timerText.x = 15;
+    timerText.y = 25;
     
     passageId = setInterval('updateTimer()', 100);
     
@@ -400,8 +404,8 @@ function stopTimer(){
     scene = SCENES.result;
     
     resultText = new createjs.Text(Status.score+"点", "100px Arial", "#105099");
-    resultText.x = w/2;
-    resultText.y = h/2;
+    resultText.x = w * 0.5;
+    resultText.y = h * 0.35;
     resultText.regX = resultText.getBounds().width / 2;
     resultText.regY = resultText.getBounds().height / 2;
 
@@ -409,7 +413,7 @@ function stopTimer(){
 
     var tweetButton = new createjs.Text("ツイートする", "25px Arial", "#FFFFFF");
     tweetButton.x = w/2 + 110;
-    tweetButton.y = h/2 + 150;
+    tweetButton.y = h * 0.7;
     tweetButton.regX = tweetButton.getBounds().width / 2;
     tweetButton.regY = tweetButton.getBounds().height / 2;
 
@@ -424,7 +428,8 @@ function stopTimer(){
     repeat = new createjs.Bitmap(loader.getResult("repeat"));
     repeat.hitArea = new createjs.Shape();
     repeat.hitArea.graphics.beginFill("#FFFFFF").drawRect(repeat.x, repeat.y, repeat.getBounds().width, repeat.getBounds().height);
-    repeat.y = h-repeat.getBounds().height/2-90;
+    repeat.regY = repeat.getBounds().height / 2;
+    repeat.y = h * 0.7;
     repeat.x = 150;
     repeat.scaleX = 0.8;
     repeat.scaleY = 0.8;
