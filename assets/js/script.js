@@ -54,7 +54,7 @@ function init() {
     stage = new createjs.Stage("nikutaro");
     w = stage.canvas.width;
     h = stage.canvas.height;
-
+    
     var manifest = [
         {src: "beef.png", id: "beef"},
         {src: "niku.png", id: "niku"},
@@ -68,11 +68,11 @@ function init() {
         {src: "customer7.png", id: "customer7"},
         {src: "balloon.png", id: "balloon"}
     ];
-
+    
     for(var i = 0; i < quests.length; i++) {
         manifest.push({src: "beef_parts/"+quests[i]+".png", id: quests[i]});
     }
-
+    
     loader = new createjs.LoadQueue(false);
     loader.addEventListener("complete", handleComplete);
     loader.loadManifest(manifest, true, "./assets/images/");
@@ -134,18 +134,18 @@ function problemInit() {
 function gameStart() {
     scene = SCENES.game;
     stage.removeAllChildren();
-
+    
     niku = new createjs.Bitmap(loader.getResult("niku"));
     niku.x = w * 0.5;
     niku.y = h * 0.6;
     stage.addChild(niku);
-
+    
     beef = new createjs.Bitmap(loader.getResult("beef"));
     beef.regX = beef.getBounds().width / 2;
     beef.regY = beef.getBounds().height / 2;
     beef.x = w * 0.5;
     beef.y = h * 0.7;
-
+    
     for (var i = 0; i < quests.length; i++) {
         (function(i, stage){
             var part = new createjs.Bitmap(loader.getResult(quests[i]));
@@ -156,7 +156,7 @@ function gameStart() {
             stage.addChild(part);
             part.addEventListener("click", function(event){
                 clickBeefParts(event, i);
-            });              
+            });
         })(i, stage);
     }
     
@@ -165,7 +165,7 @@ function gameStart() {
     }
     
     problemInit();
-
+    
     scoreText = new createjs.Text("", "20px Arial", "#000000");
     
     var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
@@ -208,12 +208,12 @@ function nextProblem(event) {
     Status.quizId++;
     Status.quizCount++;
     Status.customerSkinId = (Status.customerSkinId + 1) % CONFIG.NUM_OF_CUSTOMER;
-
+    
     if(Status.quizId >= CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP) {
         Status.questions = generateProblem(CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
         Status.quizId = 0;
     }
-
+    
     for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
         if(i == Status.customerSkinId) {
             customer[i].x = w * 0.8 + 200;
