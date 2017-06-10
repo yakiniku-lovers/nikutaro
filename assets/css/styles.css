@@ -22,9 +22,6 @@ body {
 	box-shadow: 0 0 40px rgb(255, 255, 255);
 }
 
-.main {
-}
-
 #nikutaro {
-	border-radius: 10px;
+	background-color: rgb(255, 255, 255);
 }
