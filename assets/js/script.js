@@ -45,6 +45,8 @@ function init() {
     loader.addEventListener("complete", handleComplete);
     loader.loadManifest(manifest, true, "./assets/images/");
     createjs.Sound.registerSound("./assets/sounds/mowmow.mp3", "mowmow");
+    createjs.Sound.registerSound("./assets/sounds/mow.mp3", "mow");
+    createjs.Sound.registerSound("./assets/sounds/bgm.mp3", "bgm");
 }
 
 function handleComplete() {
@@ -102,6 +104,9 @@ function gameStart() {
     startShowTimer(30);
 
     stage.addChild(beef);
+
+    var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
+    createjs.Sound.play("bgm", ppc);
 }
 
 function tick(event) {
@@ -115,11 +120,6 @@ function tick(event) {
 	stage.update(event);
 }
 
-function sayMoo(event){
-    // "mowmow"は後でconstに追加
-    createjs.Sound.play("mowmow");
-}
-
 function clickBeefParts(event, i) {
 	if (i == questions[now]){
 		nextProblem();
@@ -128,6 +128,7 @@ function clickBeefParts(event, i) {
             .to({x: customer[count % CUSTOMER_NUM].x - 200, y: customer[count % CUSTOMER_NUM].y}, 400)
             .to({x: customer[count % CUSTOMER_NUM].x - 200, y: customer[count % CUSTOMER_NUM].y}, 200)
             .to({x: w * 0.5 ,y: h*0.6}, 10);
+    	createjs.Sound.play("mow");  
 	} else {
     	createjs.Sound.play("mowmow");  
 		currentScore -= 50;
@@ -236,6 +237,7 @@ function startShowTimer(initialSecond) {
 function stopTimer(){
   clearInterval(passageId);
   //write next scene
+  createjs.Sound.stop("bgm");
   stage.removeAllChildren();
   scene = SCENES.result;
   resultText = new createjs.Text(currentScore+"点", "100px Arial", "#105099");
