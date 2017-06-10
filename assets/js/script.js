@@ -404,8 +404,8 @@ function stopTimer(){
     scene = SCENES.result;
     
     resultText = new createjs.Text(Status.score+"点", "100px Arial", "#105099");
-    resultText.x = w/2;
-    resultText.y = h/2;
+    resultText.x = w * 0.5;
+    resultText.y = h * 0.35;
     resultText.regX = resultText.getBounds().width / 2;
     resultText.regY = resultText.getBounds().height / 2;
 
@@ -413,7 +413,7 @@ function stopTimer(){
 
     var tweetButton = new createjs.Text("ツイートする", "25px Arial", "#FFFFFF");
     tweetButton.x = w/2 + 110;
-    tweetButton.y = h/2 + 150;
+    tweetButton.y = h * 0.7;
     tweetButton.regX = tweetButton.getBounds().width / 2;
     tweetButton.regY = tweetButton.getBounds().height / 2;
 
@@ -428,7 +428,8 @@ function stopTimer(){
     repeat = new createjs.Bitmap(loader.getResult("repeat"));
     repeat.hitArea = new createjs.Shape();
     repeat.hitArea.graphics.beginFill("#FFFFFF").drawRect(repeat.x, repeat.y, repeat.getBounds().width, repeat.getBounds().height);
-    repeat.y = h-repeat.getBounds().height/2-90;
+    repeat.regY = repeat.getBounds().height / 2;
+    repeat.y = h * 0.7;
     repeat.x = 150;
     repeat.scaleX = 0.8;
     repeat.scaleY = 0.8;
