@@ -47,6 +47,7 @@ Status = {
     remainSec: 0,
     extendTimeGage: 0,
     questions: new Array(),
+    alreadyCorrected: false,
 };
 
 var stage, w, h, loader;
@@ -271,21 +272,25 @@ function tick(event) {
 
 function clickBeefParts(event, i) {
     if (i == Status.questions[Status.quizId]){
-        Status.score += 10;
-        Status.extendTimeGage += 1;
-        if (Status.questions[Status.quizId] >= 0){
-            createjs.Sound.play("mow");
-            createjs.Tween.get(niku)
-                .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 120)
-                .call(function (){
-                    createjs.Tween.get(customer[Status.customerSkinId]).to({x: 0}, 200);
-                })
-                .to({x: w * 0.5 ,y: h*0.6})
-                .wait(120)
-                .call(nextProblem);
-        } else {
-            createjs.Sound.play("ha-sound");
-            nextProblem(true);
+        if (Status.alreadyCorrected == false){
+            Status.score += 10;
+            Status.extendTimeGage += 1;
+            Status.alreadyCorrected = true;
+            
+            if (Status.questions[Status.quizId] >= 0){
+                createjs.Sound.play("mow");
+                createjs.Tween.get(niku)
+                    .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 120)
+                    .call(function (){
+                        createjs.Tween.get(customer[Status.customerSkinId]).to({x: 0}, 200);
+                    })
+                    .to({x: w * 0.5 ,y: h*0.6})
+                    .wait(120)
+                    .call(nextProblem);
+            } else {
+                createjs.Sound.play("ha-sound");
+                nextProblem(true);
+            }
         }
     } else {
         Status.extendTimeGage = 0;
@@ -322,6 +327,7 @@ function checkExtendTimeGage() {
 function nextProblem(no_change_customer) {
     Status.quizId++;
     Status.quizCount++;
+    Status.alreadyCorrected = false;
     
     if (no_change_customer != true){
         Status.customerSkinId = (Status.customerSkinId + 1) % CONFIG.NUM_OF_CUSTOMER;
