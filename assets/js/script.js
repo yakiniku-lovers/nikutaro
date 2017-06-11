@@ -47,6 +47,7 @@ Status = {
     remainSec: 0,
     extendTimeGage: 0,
     questions: new Array(),
+    alreadyCorrected: false,
 };
 
 var stage, w, h, loader;
@@ -233,7 +234,7 @@ function gameStart() {
 
     for (var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
         circleGage[i] = new createjs.Shape();
-        circleGage[i].graphics.beginFill("#FF0000").drawCircle(80 + i * 25, 12, 10);
+        circleGage[i].graphics.beginFill("#FF0000").drawCircle(90 + i * 25, 12, 10);
         circleGage[i].alpha = 0.2;
         stage.addChild(circleGage[i]);
     }
@@ -252,8 +253,9 @@ function tick(event) {
     if(scene == SCENES.game) {
         scoreText.text = "Score: " + Status.score;
         scoreText.regX = scoreText.getBounds().width;
-        scoreText.x = w;
-        scoreText.y = 10;
+        scoreText.regY = scoreText.getBounds().height;
+        scoreText.x = w - 15;
+        scoreText.y = 30;
     }
     
     stage.update(event);
@@ -261,21 +263,25 @@ function tick(event) {
 
 function clickBeefParts(event, i) {
     if (i == Status.questions[Status.quizId]){
-        Status.score += 10;
-        Status.extendTimeGage += 1;
-        if (Status.questions[Status.quizId] >= 0){
-            createjs.Sound.play("mow");
-            createjs.Tween.get(niku)
-                .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 120)
-                .call(function (){
-                    createjs.Tween.get(customer[Status.customerSkinId]).to({x: 0}, 200);
-                })
-                .to({x: w * 0.5 ,y: h*0.6})
-                .wait(120)
-                .call(nextProblem);
-        } else {
-            createjs.Sound.play("ha-sound");
-            nextProblem(true);
+        if (Status.alreadyCorrected == false){
+            Status.score += 10;
+            Status.extendTimeGage += 1;
+            Status.alreadyCorrected = true;
+            
+            if (Status.questions[Status.quizId] >= 0){
+                createjs.Sound.play("mow");
+                createjs.Tween.get(niku)
+                    .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 120)
+                    .call(function (){
+                        createjs.Tween.get(customer[Status.customerSkinId]).to({x: 0}, 200);
+                    })
+                    .to({x: w * 0.5 ,y: h*0.6})
+                    .wait(120)
+                    .call(nextProblem);
+            } else {
+                createjs.Sound.play("ha-sound");
+                nextProblem(true);
+            }
         }
     } else {
         Status.extendTimeGage = 0;
@@ -312,6 +318,7 @@ function checkExtendTimeGage() {
 function nextProblem(no_change_customer) {
     Status.quizId++;
     Status.quizCount++;
+    Status.alreadyCorrected = false;
     
     if (no_change_customer != true){
         Status.customerSkinId = (Status.customerSkinId + 1) % CONFIG.NUM_OF_CUSTOMER;
@@ -374,6 +381,9 @@ function startShowTimer(timeLimitBySec) {
     
     timerText = new createjs.Text("", "24px sans-serif", "DarkRed");
     timerText.text = Status.remainSec / 10;
+    timerText.regY = timerText.getBounds().height / 2;
+    timerText.x = 15;
+    timerText.y = 25;
     
     passageId = setInterval('updateTimer()', 100);
     
@@ -390,15 +400,15 @@ function stopTimer(){
     scene = SCENES.result;
     
     resultText = new createjs.Text(Status.score+"点", "100px Arial", "#105099");
-    resultText.x = w/2;
-    resultText.y = h/2;
+    resultText.x = w * 0.5;
+    resultText.y = h * 0.35;
     setCentering(resultText);
 
     createjs.Sound.play("result");
 
     var tweetButton = new createjs.Text("ツイートする", "25px Arial", "#FFFFFF");
     tweetButton.x = w/2 + 110;
-    tweetButton.y = h/2 + 150;
+    tweetButton.y = h * 0.7;
     setCentering(tweetButton);
 
     var tweetRect = new createjs.Shape();
@@ -412,7 +422,8 @@ function stopTimer(){
     repeat = new createjs.Bitmap(loader.getResult("repeat"));
     repeat.hitArea = new createjs.Shape();
     repeat.hitArea.graphics.beginFill("#FFFFFF").drawRect(repeat.x, repeat.y, repeat.getBounds().width, repeat.getBounds().height);
-    repeat.y = h-repeat.getBounds().height/2-90;
+    repeat.regY = repeat.getBounds().height / 2;
+    repeat.y = h * 0.7;
     repeat.x = 150;
     repeat.scaleX = 0.8;
     repeat.scaleY = 0.8;
