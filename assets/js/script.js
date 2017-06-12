@@ -1,45 +1,86 @@
-const quests = [
-    "Neck","Shoulder","Tombi","Misuji","ShoulderLoin","RibLoin",
-    "Sirloin","Fillet","Bara","Uchimomo","Shintama","Sotomomo","Lampu",
-    "Ichibo","Sune","ShoulderBara"
-];
+"use strict";
 
-const SCENES = {
-    start: 0,
-    game: 1,
-    result: 2,
-};
+var Nikutaro = (function() {
+    var _score = 0;
+    var _quizId = 0;
+    var _quizCount = 0;
+    var _customerSkinId = 0;
+    var _remainSec = 0;
+    var _extendTimeGage = 0;
+    var _questions = new Array();
+    var _alreadyCorrected = false;
+    return {
+        QUESTS: Object.freeze([ 
+            "Neck","Shoulder","Tombi","Misuji","ShoulderLoin","RibLoin",
+            "Sirloin","Fillet","Bara","Uchimomo","Shintama","Sotomomo","Lampu",
+            "Ichibo","Sune","ShoulderBara"
+        ]),
+        SCENES: Object.freeze({
+            start: 0,
+            game: 1,
+            result: 2
+        }),
+        JP_QUESTS : Object.freeze({
+            Neck: "ネック",
+            Shoulder: "肩",
+            Tombi: "トンビ",
+            Misuji: "ミスジ",
+            ShoulderLoin: "肩ロース",
+            RibLoin: "リブロース",
+            Sirloin: "サーロイン",
+            Fillet: "ヒレ",
+            Bara: "バラ",
+            Uchimomo: "うちもも",
+            Shintama: "しんたま",
+            Sotomomo: "そともも",
+            Lampu: "ランプ",
+            Ichibo: "イチボ",
+            Sune: "すね",
+            ShoulderBara: "肩バラ"
+        }),
+        TRAPS: Object.freeze([
+            "扁",
+            "トンピ",
+            "ミミズ",
+            "扁ロース",
+            "リプロース",
+            "パラ",
+            "砂ずり",
+            "肩パラ",
+            "セセリ",
+            "胸肉",
+            "ササミ",
+            "手羽元",
+            "手羽先",
+            "サエズリ",
+            "ハツ",
+            "ヤゲン",
+            "砂肝"
+        ]),
+        CONFIG: Object.freeze({
+            NUM_OF_QUIZ_PER_LEVEL_UP: 10,
+            NUM_OF_CUSTOMER: 8,
+            NUM_OF_EXTEND_TIME: 5,
+            TIME_OF_EXTEND_BY_SEC: 5,
+            TIME_LIMIT_BY_SEC: 30,
+        }),
 
-const jpQuests = {
-    Neck: "ネック",
-    Shoulder: "肩",
-    Tombi: "トンビ",
-    Misuji: "ミスジ",
-    ShoulderLoin: "肩ロース",
-    RibLoin: "リブロース",
-    Sirloin: "サーロイン",
-    Fillet: "ヒレ",
-    Bara: "バラ",
-    Uchimomo: "うちもも",
-    Shintama: "しんたま",
-    Sotomomo: "そともも",
-    Lampu: "ランプ",
-    Ichibo: "イチボ",
-    Sune: "すね",
-    ShoulderBara: "肩バラ"
-};
+        // 解答した部位が正しいかどうかを返す
 
-const traps = ["扁", "トンピ", "ミミズ", "扁ロース", "リプロース", "パラ", "砂ずり", "肩パラ", "セセリ", "胸肉", "ササミ", "手羽元", "手羽先", "サエズリ", "ハツ", "ヤゲン", "砂肝"];
+        // 正解したときのスコア処理
 
-const CONFIG = {
-    NUM_OF_QUIZ_PER_LEVEL_UP: 10,
-    NUM_OF_CUSTOMER: 8,
-    NUM_OF_EXTEND_TIME: 5,
-    TIME_OF_EXTEND_BY_SEC: 5,
-    TIME_LIMIT_BY_SEC: 30,
-};
+        // 不正解したときのスコア処理
 
-Status = {
+        // 連続して正解したら時間が伸びるやつ
+
+        // 問題の出題
+
+        // 
+
+    }
+}());
+
+var Status = {
     score: 0,
     quizId: 0,
     quizCount: 0,
@@ -57,6 +98,7 @@ var circleGage = new Array();
 
 window.addEventListener("load", init); 
 
+// 一番初めに呼ばれる関数
 function init() { 
     createjs.Ticker.setFPS(60);
     
@@ -72,12 +114,12 @@ function init() {
         {src: "ha.png", id: "ha"}
     ];
     
-    for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
+    for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_CUSTOMER; i++) {
         manifest.push({src: "customer"+i+".png", id: "customer"+i});
     }
 
-    for(var i = 0; i < quests.length; i++) {
-        manifest.push({src: "beef_parts/"+quests[i]+".png", id: quests[i]});
+    for(var i = 0; i < Nikutaro.QUESTS.length; i++) {
+        manifest.push({src: "beef_parts/"+Nikutaro.QUESTS[i]+".png", id: Nikutaro.QUESTS[i]});
     }
     
     loader = new createjs.LoadQueue(false);
@@ -93,8 +135,13 @@ function init() {
     createjs.Sound.registerSound("./assets/sounds/start.mp3", "start");
 }
 
+
+
+// *******************   EventListener   *******************
+
+// ロード完了時に呼ばれる関数
 function handleComplete() {
-    scene = SCENES.start;
+    scene = Nikutaro.SCENES.start;
     
     var logoText = new createjs.Text("精肉屋さん肉太郎", "60px Arial", "#C92525");
     logoText.x = w * 0.5;
@@ -128,10 +175,134 @@ function handleComplete() {
     createjs.Ticker.addEventListener("tick", tick);
 }
 
-function problemInit() {
-    Status.questions = generateProblem(CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
+// スタートボタンを押したときに呼ばれる関数
+function countDown() {
+    stage.removeAllChildren();
+    var countDownText = new createjs.Text("3", "100px Arial", "#C92525");
+    countDownText.x = w * 0.5;
+    countDownText.y = h * 0.5;
+    setCentering(countDownText);
+    stage.addChild(countDownText);
+    createjs.Tween.get(countDownText)
+        .call(countDownSound)
+        .wait(1000)
+        .to({text: "2"})
+        .call(countDownSound)
+        .wait(1000)
+        .to({text: "1"})
+        .call(countDownSound)
+        .wait(1000)
+        .call(gameStart);
+}
+
+// 時間経過による再描画時に呼ばれる
+function tick(event) {
+    if(scene == Nikutaro.SCENES.game) {
+        scoreText.text = "Score: " + Status.score;
+        scoreText.regX = scoreText.getBounds().width;
+        scoreText.regY = scoreText.getBounds().height;
+        scoreText.x = w - 15;
+        scoreText.y = 30;
+    }
     
-    for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
+    stage.update(event);
+}
+
+// 牛の部位をクリックしたときに呼ばれる
+function clickBeefParts(event, i) {
+    if (i == Status.questions[Status.quizId]){
+        if (Status.alreadyCorrected == false){
+            Status.score += 10;
+            Status.extendTimeGage += 1;
+            Status.alreadyCorrected = true;
+            
+            if (Status.questions[Status.quizId] >= 0){
+                createjs.Sound.play("mow");
+                createjs.Tween.get(niku)
+                    .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 120)
+                    .call(function (){
+                        createjs.Tween.get(customer[Status.customerSkinId]).to({x: 0}, 200);
+                    })
+                    .to({x: w * 0.5 ,y: h*0.6})
+                    .wait(120)
+                    .call(nextProblem);
+            } else {
+                createjs.Sound.play("ha-sound");
+                nextProblem(true);
+            }
+        }
+    } else {
+        Status.extendTimeGage = 0;
+        createjs.Sound.play("mowmow");  
+        Status.score -= 50;
+    }
+    checkExtendTimeGage();
+}
+
+
+// ***************************************************
+
+var scoreText;
+
+// カウントダウンが終わったら呼ばれる
+function gameStart() {
+    scene = Nikutaro.SCENES.game;
+    stage.removeAllChildren();
+    
+    for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_CUSTOMER; i++) {
+        customer[i] = new createjs.Bitmap(loader.getResult("customer" + i));
+    }
+    
+    problemInit();
+
+    niku = new createjs.Bitmap(loader.getResult("niku"));
+    niku.x = w * 0.5;
+    niku.y = h * 0.6;
+    stage.addChild(niku);
+    
+    beef = new createjs.Bitmap(loader.getResult("beef"));
+    setCentering(beef);
+    beef.x = w * 0.5;
+    beef.y = h * 0.7;
+    
+    for (var i = 0; i < Nikutaro.QUESTS.length; i++) {
+        (function(i, stage){
+            var part = new createjs.Bitmap(loader.getResult(Nikutaro.QUESTS[i]));
+            part.regX = beef.getBounds().width / 2;
+            part.regY = beef.getBounds().height / 2;
+            part.x = w * 0.5;
+            part.y = h * 0.7;
+            stage.addChild(part);
+            part.addEventListener("click", function(event){
+                clickBeefParts(event, i);
+            });
+        })(i, stage);
+    }
+    
+    scoreText = new createjs.Text("", "20px Arial", "#000000");
+
+    for (var i = 0; i < Nikutaro.CONFIG.NUM_OF_EXTEND_TIME; i++) {
+        circleGage[i] = new createjs.Shape();
+        circleGage[i].graphics.beginFill("#FF0000").drawCircle(90 + i * 25, 12, 10);
+        circleGage[i].alpha = 0.2;
+        stage.addChild(circleGage[i]);
+    }
+    
+    var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
+    createjs.Sound.play("bgm", ppc);
+    createjs.Sound.play("start");
+    
+    startShowTimer(Nikutaro.CONFIG.TIME_LIMIT_BY_SEC);
+    
+    stage.addChild(scoreText);
+    stage.addChild(beef);
+}
+
+// ゲームが始まったときに呼ばれる
+function problemInit() {
+    Status.questions = generateProblem(Nikutaro.CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
+    
+    for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_CUSTOMER; i++) {
         customer[i].scaleX = 0.2;
         customer[i].scaleY = 0.2;
         setCentering(customer[i]);
@@ -172,127 +343,15 @@ function problemInit() {
     nextProblem();
 }
 
-function countDown() {
-    stage.removeAllChildren();
-    var countDownText = new createjs.Text("3", "100px Arial", "#C92525");
-    countDownText.x = w * 0.5;
-    countDownText.y = h * 0.5;
-    setCentering(countDownText);
-    stage.addChild(countDownText);
-    createjs.Tween.get(countDownText)
-        .call(countDownSound)
-        .wait(1000)
-        .to({text: "2"})
-        .call(countDownSound)
-        .wait(1000)
-        .to({text: "1"})
-        .call(countDownSound)
-        .wait(1000)
-        .call(gameStart);
-}
 
+// カウントダウンの音を鳴らす
 function countDownSound() {
     createjs.Sound.play("countDown");
 }
 
-function gameStart() {
-    scene = SCENES.game;
-    stage.removeAllChildren();
-    
-    for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
-        customer[i] = new createjs.Bitmap(loader.getResult("customer" + i));
-    }
-    
-    problemInit();
-
-    niku = new createjs.Bitmap(loader.getResult("niku"));
-    niku.x = w * 0.5;
-    niku.y = h * 0.6;
-    stage.addChild(niku);
-    
-    beef = new createjs.Bitmap(loader.getResult("beef"));
-    setCentering(beef);
-    beef.x = w * 0.5;
-    beef.y = h * 0.7;
-    
-    for (var i = 0; i < quests.length; i++) {
-        (function(i, stage){
-            var part = new createjs.Bitmap(loader.getResult(quests[i]));
-            part.regX = beef.getBounds().width / 2;
-            part.regY = beef.getBounds().height / 2;
-            part.x = w * 0.5;
-            part.y = h * 0.7;
-            stage.addChild(part);
-            part.addEventListener("click", function(event){
-                clickBeefParts(event, i);
-            });
-        })(i, stage);
-    }
-    
-    
-    scoreText = new createjs.Text("", "20px Arial", "#000000");
-
-    for (var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
-        circleGage[i] = new createjs.Shape();
-        circleGage[i].graphics.beginFill("#FF0000").drawCircle(90 + i * 25, 12, 10);
-        circleGage[i].alpha = 0.2;
-        stage.addChild(circleGage[i]);
-    }
-    
-    var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
-    createjs.Sound.play("bgm", ppc);
-    createjs.Sound.play("start");
-    
-    startShowTimer(CONFIG.TIME_LIMIT_BY_SEC);
-    
-    stage.addChild(scoreText);
-    stage.addChild(beef);
-}
-
-function tick(event) {
-    if(scene == SCENES.game) {
-        scoreText.text = "Score: " + Status.score;
-        scoreText.regX = scoreText.getBounds().width;
-        scoreText.regY = scoreText.getBounds().height;
-        scoreText.x = w - 15;
-        scoreText.y = 30;
-    }
-    
-    stage.update(event);
-}
-
-function clickBeefParts(event, i) {
-    if (i == Status.questions[Status.quizId]){
-        if (Status.alreadyCorrected == false){
-            Status.score += 10;
-            Status.extendTimeGage += 1;
-            Status.alreadyCorrected = true;
-            
-            if (Status.questions[Status.quizId] >= 0){
-                createjs.Sound.play("mow");
-                createjs.Tween.get(niku)
-                    .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 120)
-                    .call(function (){
-                        createjs.Tween.get(customer[Status.customerSkinId]).to({x: 0}, 200);
-                    })
-                    .to({x: w * 0.5 ,y: h*0.6})
-                    .wait(120)
-                    .call(nextProblem);
-            } else {
-                createjs.Sound.play("ha-sound");
-                nextProblem(true);
-            }
-        }
-    } else {
-        Status.extendTimeGage = 0;
-        createjs.Sound.play("mowmow");  
-        Status.score -= 50;
-    }
-    checkExtendTimeGage();
-}
-
+// 連続して正解したら時間が伸びるやつの処理
 function checkExtendTimeGage() {
-    for(var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
+    for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_EXTEND_TIME; i++) {
         if(i < Status.extendTimeGage) {
             circleGage[i].alpha = 1;
         } else {
@@ -303,8 +362,8 @@ function checkExtendTimeGage() {
     if(Status.extendTimeGage == 5) {
         var interval = 200;
         Status.extendTimeGage = 0;
-        Status.remainSec += CONFIG.TIME_OF_EXTEND_BY_SEC * 10;
-        for(var i = 0; i < CONFIG.NUM_OF_EXTEND_TIME; i++) {
+        Status.remainSec += Nikutaro.CONFIG.TIME_OF_EXTEND_BY_SEC * 10;
+        for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_EXTEND_TIME; i++) {
              createjs.Tween.get(circleGage[i])
                 .to({alpha: 0.2}, interval)
                 .to({alpha: 1.0}, interval)
@@ -321,16 +380,16 @@ function nextProblem(no_change_customer) {
     Status.alreadyCorrected = false;
     
     if (no_change_customer != true){
-        Status.customerSkinId = (Status.customerSkinId + 1) % CONFIG.NUM_OF_CUSTOMER;
+        Status.customerSkinId = (Status.customerSkinId + 1) % Nikutaro.CONFIG.NUM_OF_CUSTOMER;
     }
     
-    if(Status.quizId >= CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP) {
-        Status.questions = generateProblem(CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
+    if(Status.quizId >= Nikutaro.CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP) {
+        Status.questions = generateProblem(Nikutaro.CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
         Status.quizId = 0;
     }
     
     if (no_change_customer != true){
-        for(var i = 0; i < CONFIG.NUM_OF_CUSTOMER; i++) {
+        for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_CUSTOMER; i++) {
             if(i == Status.customerSkinId) {
                 customer[i].x = w * 0.8 + 200;
                 customer[i].visible = true;
@@ -342,10 +401,10 @@ function nextProblem(no_change_customer) {
     }
     
     if (Math.random() < Math.atan(Status.quizCount / 10) / (Math.PI / 2) * 0.2 && Status.quizCount >= 5){
-        questionText.text = traps[Math.floor(Math.random() * traps.length)];
+        questionText.text = Nikutaro.TRAPS[Math.floor(Math.random() * Nikutaro.TRAPS.length)];
         Status.questions[Status.quizId] = -1;
     } else {
-        questionText.text = jpQuests[quests[Status.questions[Status.quizId]]];
+        questionText.text = Nikutaro.JP_QUESTS[Nikutaro.QUESTS[Status.questions[Status.quizId]]];
     }
     setCentering(questionText);
     questionText.y = h * 0.15 + 60;
@@ -357,7 +416,7 @@ function nextProblem(no_change_customer) {
 function generateProblem(num) {
     var problems = new Array();
     for (var i = 0 ; i < num; i++){
-        var rand = Math.floor(Math.random() * quests.length);
+        var rand = Math.floor(Math.random() * Nikutaro.QUESTS.length);
         problems.push(rand);
     }
     return problems;
@@ -397,9 +456,9 @@ function stopTimer(){
     createjs.Sound.stop("bgm");
     
     stage.removeAllChildren();
-    scene = SCENES.result;
+    scene = Nikutaro.SCENES.result;
     
-    resultText = new createjs.Text(Status.score+"点", "100px Arial", "#105099");
+    var resultText = new createjs.Text(Status.score+"点", "100px Arial", "#105099");
     resultText.x = w * 0.5;
     resultText.y = h * 0.35;
     setCentering(resultText);
@@ -419,7 +478,7 @@ function stopTimer(){
     
     stage.addChild(resultText);
 
-    repeat = new createjs.Bitmap(loader.getResult("repeat"));
+    var repeat = new createjs.Bitmap(loader.getResult("repeat"));
     repeat.hitArea = new createjs.Shape();
     repeat.hitArea.graphics.beginFill("#FFFFFF").drawRect(repeat.x, repeat.y, repeat.getBounds().width, repeat.getBounds().height);
     repeat.regY = repeat.getBounds().height / 2;
@@ -430,6 +489,7 @@ function stopTimer(){
     repeat.addEventListener("click",jumpStart);
     stage.addChild(repeat);
 }
+
 function jumpTwitter(event) {
     window.open("https://twitter.com/intent/tweet?hashtags=%E7%B2%BE%E8%82%89%E5%B1%8B%E3%81%95%E3%82%93%E8%82%89%E5%A4%AA%E9%83%8E&ref_src=twsrc%5Etfw&text="+Status.score+"%E7%82%B9%E3%82%92%E5%8F%96%E3%81%A3%E3%81%A6%E3%82%84%E3%81%A3%E3%81%9F%E3%81%9C%EF%BC%81&tw_p=tweetbutton");
 }
