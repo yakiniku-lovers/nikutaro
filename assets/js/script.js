@@ -91,7 +91,10 @@ var Status = {
     alreadyCorrected: false,
 };
 
-var stage, w, h, loader;
+var stage = new createjs.Stage("nikutaro");;
+var w = stage.canvas.width;
+var h = stage.canvas.height;
+var loader;
 var questionText, niku, questions, scene;
 var customer = new Array();
 var circleGage = new Array();
@@ -102,10 +105,11 @@ window.addEventListener("load", init);
 function init() { 
     createjs.Ticker.setFPS(60);
     
-    stage = new createjs.Stage("nikutaro");
-    w = stage.canvas.width;
-    h = stage.canvas.height;
-    
+    setImages();
+    setSound();
+}
+
+function setImages() {
     var manifest = [
         {src: "beef.png", id: "beef"},
         {src: "niku.png", id: "niku"},
@@ -121,11 +125,13 @@ function init() {
     for(var i = 0; i < Nikutaro.QUESTS.length; i++) {
         manifest.push({src: "beef_parts/"+Nikutaro.QUESTS[i]+".png", id: Nikutaro.QUESTS[i]});
     }
-    
+
     loader = new createjs.LoadQueue(false);
     loader.addEventListener("complete", handleComplete);
     loader.loadManifest(manifest, true, "./assets/images/");
-    
+}
+
+function setSound() {
     createjs.Sound.registerSound("./assets/sounds/mowmow.mp3", "mowmow");
     createjs.Sound.registerSound("./assets/sounds/mow.mp3", "mow");
     createjs.Sound.registerSound("./assets/sounds/bgm.mp3", "bgm");
@@ -135,36 +141,20 @@ function init() {
     createjs.Sound.registerSound("./assets/sounds/start.mp3", "start");
 }
 
-
-
 // *******************   EventListener   *******************
 
 // ロード完了時に呼ばれる関数
 function handleComplete() {
     scene = Nikutaro.SCENES.start;
     
-    var logoText = new createjs.Text("精肉屋さん肉太郎", "60px Arial", "#C92525");
-    logoText.x = w * 0.5;
-    logoText.y = h * 0.2;
-    setCentering(logoText);
-
-    var descriptionText = new createjs.Text("お客さんが注文する部位をクリックしてください。\n部位が存在しなければ「は？」と言って大丈夫です。", "20px Arial", "#000000");
-    descriptionText.lineHeight = 40;
-    descriptionText.textAlign = "center";
-    descriptionText.x = w * 0.5;
-    descriptionText.y = h * 0.55;
-    descriptionText.regY = descriptionText.getBounds().height / 2;
-
-    var startText = new createjs.Text("画面クリックでスタート", "40px Arial", "#105099");
-    startText.x = w * 0.5;
-    startText.y = h * 0.8;
-    setCentering(startText);
+    var logoText = initLogoText();
+    var descriptionText = initDescriptionText();
+    var startText = initStartText();
     createjs.Tween.get(startText, {loop:true})
             .to({alpha: 0}, 1000)
             .to({alpha: 1}, 1000);
-    
-    var backRect = new createjs.Shape();
-    backRect.graphics.beginFill("#FFFFFF").drawRect(0, 0, w, h);
+
+    var backRect = initBackRect();
     backRect.addEventListener("click", countDown);
     
     stage.addChild(backRect);
@@ -178,10 +168,7 @@ function handleComplete() {
 // スタートボタンを押したときに呼ばれる関数
 function countDown() {
     stage.removeAllChildren();
-    var countDownText = new createjs.Text("3", "100px Arial", "#C92525");
-    countDownText.x = w * 0.5;
-    countDownText.y = h * 0.5;
-    setCentering(countDownText);
+    var countDownText = initCountDownText();
     stage.addChild(countDownText);
     createjs.Tween.get(countDownText)
         .call(countDownSound)
@@ -199,10 +186,6 @@ function countDown() {
 function tick(event) {
     if(scene == Nikutaro.SCENES.game) {
         scoreText.text = "Score: " + Status.score;
-        scoreText.regX = scoreText.getBounds().width;
-        scoreText.regY = scoreText.getBounds().height;
-        scoreText.x = w - 15;
-        scoreText.y = 30;
     }
     
     stage.update(event);
@@ -250,28 +233,20 @@ function gameStart() {
     stage.removeAllChildren();
     
     for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_CUSTOMER; i++) {
-        customer[i] = new createjs.Bitmap(loader.getResult("customer" + i));
+        customer[i] = initCustomer(i);
+        stage.addChild(customer[i]);
     }
     
     problemInit();
 
-    niku = new createjs.Bitmap(loader.getResult("niku"));
-    niku.x = w * 0.5;
-    niku.y = h * 0.6;
+    niku = initNiku();
     stage.addChild(niku);
     
-    var beef = new createjs.Bitmap(loader.getResult("beef"));
-    setCentering(beef);
-    beef.x = w * 0.5;
-    beef.y = h * 0.7;
+    var beef = initBeef();
     
     for (var i = 0; i < Nikutaro.QUESTS.length; i++) {
         (function(i, stage){
-            var part = new createjs.Bitmap(loader.getResult(Nikutaro.QUESTS[i]));
-            part.regX = beef.getBounds().width / 2;
-            part.regY = beef.getBounds().height / 2;
-            part.x = w * 0.5;
-            part.y = h * 0.7;
+            var part = initPart(Nikutaro.QUESTS[i]);
             stage.addChild(part);
             part.addEventListener("click", function(event){
                 clickBeefParts(event, i);
@@ -279,12 +254,10 @@ function gameStart() {
         })(i, stage);
     }
     
-    scoreText = new createjs.Text("", "20px Arial", "#000000");
+    scoreText = initScoreText();
 
     for (var i = 0; i < Nikutaro.CONFIG.NUM_OF_EXTEND_TIME; i++) {
-        circleGage[i] = new createjs.Shape();
-        circleGage[i].graphics.beginFill("#FF0000").drawCircle(90 + i * 25, 12, 10);
-        circleGage[i].alpha = 0.2;
+        circleGage[i] = initCircleGage(i);
         stage.addChild(circleGage[i]);
     }
     
@@ -302,29 +275,9 @@ function gameStart() {
 function problemInit() {
     Status.questions = generateProblem(Nikutaro.CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
     
-    for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_CUSTOMER; i++) {
-        customer[i].scaleX = 0.2;
-        customer[i].scaleY = 0.2;
-        setCentering(customer[i]);
-        customer[i].y = h * 0.2 + 50;
-        stage.addChild(customer[i]);
-    }
+    var balloon = initBalloon();
     
-    var balloon = new createjs.Bitmap(loader.getResult("balloon"));
-    balloon.scaleX = 0.8;
-    balloon.scaleY = 0.8;
-    setCentering(balloon);
-    balloon.x = w * 0.4;
-    balloon.y = h * 0.15 + 50;
-    
-    var ha = new createjs.Bitmap(loader.getResult("ha"));
-    ha.hitArea = new createjs.Shape();
-    ha.hitArea.graphics.beginFill("#FFFFFF").drawRect(0, 0, 128, 128);
-    ha.scaleX = 0.8;
-    ha.scaleY = 0.8;
-    setCentering(ha);
-    ha.x = w * 0.12;
-    ha.y = h * 0.8;
+    var ha = initHa();
     ha.addEventListener('click', function(event){
         createjs.Tween.get(event.target)
             .to({scaleX: 1.2, scaleY: 1.2, rotation: 20}, 100)
@@ -332,9 +285,7 @@ function problemInit() {
         clickBeefParts(event, -1);
     });
     
-    questionText = new createjs.Text("", "40px Arial", "#000000");
-    questionText.x = w * 0.37;
-    questionText.y = h * 0.15 + 50;
+    questionText = initQuestionText();
     
     stage.addChild(balloon);
     stage.addChild(questionText);
@@ -438,15 +389,11 @@ function updateTimer() {
 function startShowTimer() {
     Status.remainSec = Nikutaro.CONFIG.TIME_LIMIT_BY_SEC * 10;
     
-    timerText = new createjs.Text("", "24px sans-serif", "DarkRed");
-    timerText.text = Nikutaro.CONFIG.TIME_LIMIT_BY_SEC;
-    timerText.regY = timerText.getBounds().height / 2;
-    timerText.x = 15;
-    timerText.y = 25;
-    
-    passageId = setInterval('updateTimer()', 100);
-    
+    timerText = initTimerText();
     stage.addChild(timerText);
+
+    passageId = setInterval(updateTimer, 100);
+    
 }
 
 function stopTimer(){
@@ -458,34 +405,19 @@ function stopTimer(){
     stage.removeAllChildren();
     scene = Nikutaro.SCENES.result;
     
-    var resultText = new createjs.Text(Status.score+"点", "100px Arial", "#105099");
-    resultText.x = w * 0.5;
-    resultText.y = h * 0.35;
-    setCentering(resultText);
+    var resultText = initResultText();
 
     createjs.Sound.play("result");
 
-    var tweetButton = new createjs.Text("ツイートする", "25px Arial", "#FFFFFF");
-    tweetButton.x = w/2 + 110;
-    tweetButton.y = h * 0.7;
-    setCentering(tweetButton);
-
-    var tweetRect = new createjs.Shape();
-    tweetRect.graphics.beginFill("#1DA1F2").drawRect(tweetButton.x-100, tweetButton.y-25, 190, 50);
+    var tweetButton = initTweetButton();
+    var tweetRect = initTweetRect();
     tweetRect.addEventListener("click", jumpTwitter);
+
     stage.addChild(tweetRect);
     stage.addChild(tweetButton);
-    
     stage.addChild(resultText);
 
-    var repeat = new createjs.Bitmap(loader.getResult("repeat"));
-    repeat.hitArea = new createjs.Shape();
-    repeat.hitArea.graphics.beginFill("#FFFFFF").drawRect(repeat.x, repeat.y, repeat.getBounds().width, repeat.getBounds().height);
-    repeat.regY = repeat.getBounds().height / 2;
-    repeat.y = h * 0.7;
-    repeat.x = 150;
-    repeat.scaleX = 0.8;
-    repeat.scaleY = 0.8;
+    var repeat = initRepeat();
     repeat.addEventListener("click",jumpStart);
     stage.addChild(repeat);
 }
@@ -496,9 +428,4 @@ function jumpTwitter(event) {
 
 function jumpStart(event) {
     window.location.href = 'index.html';
-}
-
-function setCentering(object) {
-    object.regX = object.getBounds().width / 2;
-    object.regY = object.getBounds().height / 2;
 }
