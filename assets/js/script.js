@@ -92,7 +92,7 @@ var Status = {
 };
 
 var stage, w, h, loader;
-var beef, balloon, questionText, niku, questions, scene, ha;
+var questionText, niku, questions, scene;
 var customer = new Array();
 var circleGage = new Array();
 
@@ -260,7 +260,7 @@ function gameStart() {
     niku.y = h * 0.6;
     stage.addChild(niku);
     
-    beef = new createjs.Bitmap(loader.getResult("beef"));
+    var beef = new createjs.Bitmap(loader.getResult("beef"));
     setCentering(beef);
     beef.x = w * 0.5;
     beef.y = h * 0.7;
@@ -310,14 +310,14 @@ function problemInit() {
         stage.addChild(customer[i]);
     }
     
-    balloon = new createjs.Bitmap(loader.getResult("balloon"));
+    var balloon = new createjs.Bitmap(loader.getResult("balloon"));
     balloon.scaleX = 0.8;
     balloon.scaleY = 0.8;
     setCentering(balloon);
     balloon.x = w * 0.4;
     balloon.y = h * 0.15 + 50;
     
-    ha = new createjs.Bitmap(loader.getResult("ha"));
+    var ha = new createjs.Bitmap(loader.getResult("ha"));
     ha.hitArea = new createjs.Shape();
     ha.hitArea.graphics.beginFill("#FFFFFF").drawRect(0, 0, 128, 128);
     ha.scaleX = 0.8;
