@@ -292,7 +292,7 @@ function gameStart() {
     createjs.Sound.play("bgm", ppc);
     createjs.Sound.play("start");
     
-    startShowTimer(Nikutaro.CONFIG.TIME_LIMIT_BY_SEC);
+    startShowTimer();
     
     stage.addChild(scoreText);
     stage.addChild(beef);
@@ -435,11 +435,11 @@ function updateTimer() {
     Status.remainSec--;
 }
 
-function startShowTimer(timeLimitBySec) {
-    Status.remainSec = timeLimitBySec * 10;
+function startShowTimer() {
+    Status.remainSec = Nikutaro.CONFIG.TIME_LIMIT_BY_SEC * 10;
     
     timerText = new createjs.Text("", "24px sans-serif", "DarkRed");
-    timerText.text = Status.remainSec / 10;
+    timerText.text = Nikutaro.CONFIG.TIME_LIMIT_BY_SEC;
     timerText.regY = timerText.getBounds().height / 2;
     timerText.x = 15;
     timerText.y = 25;
