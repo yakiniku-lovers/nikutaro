@@ -298,13 +298,12 @@ function gameStart() {
         stage.addChild(customer[i]);
     }
     
-    problemInit();
-
     niku = initNiku();
     stage.addChild(niku);
     
     var beef = initBeef();
-    
+    stage.addChild(beef);
+
     for (var i = 0; i < Nikutaro.QUESTS.length; i++) {
         (function(i, stage){
             var part = initPart(Nikutaro.QUESTS[i]);
@@ -314,30 +313,7 @@ function gameStart() {
             });
         })(i, stage);
     }
-    
-    scoreText = initScoreText();
 
-    for (var i = 0; i < Nikutaro.CONFIG.NUM_OF_EXTEND_TIME; i++) {
-        circleGage[i] = initCircleGage(i);
-        stage.addChild(circleGage[i]);
-    }
-    
-    var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
-    createjs.Sound.play("bgm", ppc);
-    createjs.Sound.play("start");
-    
-    startShowTimer();
-    
-    stage.addChild(scoreText);
-    stage.addChild(beef);
-}
-
-// ゲームが始まったときに呼ばれる
-function problemInit() {
-    Status.questions = generateProblem(Nikutaro.CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
-    
-    var balloon = initBalloon();
-    
     var ha = initHa();
     ha.addEventListener('click', function(event){
         createjs.Tween.get(event.target)
@@ -345,16 +321,32 @@ function problemInit() {
             .to({scaleX: 0.8, scaleY: 0.8, rotation: 0}, 100);
         clickBeefParts(event, -1);
     });
+    stage.addChild(ha);
+
+    scoreText = initScoreText();
+    stage.addChild(scoreText);
+
+    for (var i = 0; i < Nikutaro.CONFIG.NUM_OF_EXTEND_TIME; i++) {
+        circleGage[i] = initCircleGage(i);
+        stage.addChild(circleGage[i]);
+    }
+
+    var balloon = initBalloon();
+    stage.addChild(balloon);
     
     questionText = initQuestionText();
-    
-    stage.addChild(balloon);
     stage.addChild(questionText);
-    stage.addChild(ha);
+
     
+    var ppc = new createjs.PlayPropsConfig().set({loop: -1, volume: 0.4})
+    createjs.Sound.play("bgm", ppc);
+    createjs.Sound.play("start");
+    
+    startShowTimer();
+    
+    Status.questions = generateProblem(Nikutaro.CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
     nextProblem();
 }
-
 
 // カウントダウンの音を鳴らす
 function countDownSound() {
@@ -368,14 +360,17 @@ function nextProblem(no_change_customer) {
     Status.quizCount++;
     Status.alreadyCorrected = false;
     
+    // questionsにある問題を全て解き終わったらquestionを更新する
     if(Status.quizId >= Nikutaro.CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP) {
         Status.questions = generateProblem(Nikutaro.CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
         Status.quizId = 0;
     }
     
     if (no_change_customer == false){
+        // 整合性をとるためにcustomerSkinIdの更新
         Status.customerSkinId = (Status.customerSkinId + 1) % Nikutaro.CONFIG.NUM_OF_CUSTOMER;
 
+        // customerの表示周り
         for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_CUSTOMER; i++) {
             customer[i].visible = false;
         }
@@ -385,6 +380,7 @@ function nextProblem(no_change_customer) {
         createjs.Tween.get(customer[Status.customerSkinId]).to({x:w * 0.8}, 200, createjs.Ease.cubicOut);
     }
     
+    // 問題を引っ掛け問題に変更する
     if (Math.random() < Math.atan(Status.quizCount / 10) / (Math.PI / 2) * 0.2 && Status.quizCount >= 5){
         questionText.text = Nikutaro.TRAPS[Math.floor(Math.random() * Nikutaro.TRAPS.length)];
         Status.questions[Status.quizId] = -1;
@@ -426,8 +422,7 @@ function startShowTimer() {
     timerText = initTimerText();
     stage.addChild(timerText);
 
-    passageId = setInterval(updateTimer, 100);
-    
+    passageId = setInterval(updateTimer, 100);   
 }
 
 function stopTimer(){
