@@ -104,8 +104,21 @@ var Nikutaro = (function() {
         wrongAnswer: function() {
             Status.score -= 50;
             Status.extendTimeGage = 0;   
+        },
+
+        isFullExtendTimeGage: function() {
+            if(Status.extendTimeGage == 5) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        extendTime: function(animation) {
+            Status.extendTimeGage = 0;
+            Status.remainSec += Nikutaro.CONFIG.TIME_OF_EXTEND_BY_SEC * 10;
+            animation();
         }
-        // 連続して正解したら時間が伸びるやつ
 
         // 問題の出題
 
@@ -248,7 +261,27 @@ function clickBeefParts(event, part_num) {
         }
     );
 
-    checkExtendTimeGage();
+    for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_EXTEND_TIME; i++) {
+        if(i < Status.extendTimeGage) {
+            circleGage[i].alpha = 1;
+        } else {
+            circleGage[i].alpha = 0.2;            
+        }
+    }
+
+    if (Nikutaro.isFullExtendTimeGage()) {
+        Nikutaro.extendTime(function animation() {
+            var interval = 200;
+            for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_EXTEND_TIME; i++) {
+                 createjs.Tween.get(circleGage[i])
+                    .to({alpha: 0.2}, interval)
+                    .to({alpha: 1.0}, interval)
+                    .to({alpha: 0.2}, interval)
+                    .to({alpha: 1.0}, interval)
+                    .to({alpha: 0.2}, interval);
+            }
+        });
+    }
 }
 
 // ***************************************************
@@ -326,31 +359,6 @@ function problemInit() {
 // カウントダウンの音を鳴らす
 function countDownSound() {
     createjs.Sound.play("countDown");
-}
-
-// 連続して正解したら時間が伸びるやつの処理
-function checkExtendTimeGage() {
-    for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_EXTEND_TIME; i++) {
-        if(i < Status.extendTimeGage) {
-            circleGage[i].alpha = 1;
-        } else {
-            circleGage[i].alpha = 0.2;            
-        }
-    }
-
-    if(Status.extendTimeGage == 5) {
-        var interval = 200;
-        Status.extendTimeGage = 0;
-        Status.remainSec += Nikutaro.CONFIG.TIME_OF_EXTEND_BY_SEC * 10;
-        for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_EXTEND_TIME; i++) {
-             createjs.Tween.get(circleGage[i])
-                .to({alpha: 0.2}, interval)
-                .to({alpha: 1.0}, interval)
-                .to({alpha: 0.2}, interval)
-                .to({alpha: 1.0}, interval)
-                .to({alpha: 0.2}, interval);
-        }
-    }
 }
 
 function nextProblem(no_change_customer) {
