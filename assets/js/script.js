@@ -85,7 +85,7 @@ var Nikutaro = (function() {
                     Status.alreadyCorrected = true;
             
                     if (Status.questions[Status.quizId] >= 0){
-                        success(nextProblem);
+                        success(nextProblem.bind(this, false));
                     } else {
                         success_doubt(nextProblem.bind(this, true));
                     }
@@ -354,11 +354,13 @@ function checkExtendTimeGage() {
 }
 
 function nextProblem(no_change_customer) {
+    no_change_customer = no_change_customer || false;
+
     Status.quizId++;
     Status.quizCount++;
     Status.alreadyCorrected = false;
     
-    if (no_change_customer != true){
+    if (no_change_customer == false){
         Status.customerSkinId = (Status.customerSkinId + 1) % Nikutaro.CONFIG.NUM_OF_CUSTOMER;
     }
     
@@ -367,7 +369,7 @@ function nextProblem(no_change_customer) {
         Status.quizId = 0;
     }
     
-    if (no_change_customer != true){
+    if (no_change_customer == false){
         for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_CUSTOMER; i++) {
             if(i == Status.customerSkinId) {
                 customer[i].x = w * 0.8 + 200;
