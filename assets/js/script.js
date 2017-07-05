@@ -107,7 +107,7 @@ var Nikutaro = (function() {
         },
 
         isFullExtendTimeGage: function() {
-            if(Status.extendTimeGage == 5) {
+            if(Status.extendTimeGage == Nikutaro.CONFIG.NUM_OF_EXTEND_TIME) {
                 return true;
             } else {
                 return false;
@@ -300,9 +300,6 @@ function gameStart() {
     
     niku = initNiku();
     stage.addChild(niku);
-    
-    var beef = initBeef();
-    stage.addChild(beef);
 
     for (var i = 0; i < Nikutaro.QUESTS.length; i++) {
         (function(i, stage){
@@ -313,6 +310,9 @@ function gameStart() {
             });
         })(i, stage);
     }
+
+    var beef = initBeef();
+    stage.addChild(beef);
 
     var ha = initHa();
     ha.addEventListener('click', function(event){
