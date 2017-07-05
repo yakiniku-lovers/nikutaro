@@ -368,25 +368,21 @@ function nextProblem(no_change_customer) {
     Status.quizCount++;
     Status.alreadyCorrected = false;
     
-    if (no_change_customer == false){
-        Status.customerSkinId = (Status.customerSkinId + 1) % Nikutaro.CONFIG.NUM_OF_CUSTOMER;
-    }
-    
     if(Status.quizId >= Nikutaro.CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP) {
         Status.questions = generateProblem(Nikutaro.CONFIG.NUM_OF_QUIZ_PER_LEVEL_UP);
         Status.quizId = 0;
     }
     
     if (no_change_customer == false){
+        Status.customerSkinId = (Status.customerSkinId + 1) % Nikutaro.CONFIG.NUM_OF_CUSTOMER;
+
         for(var i = 0; i < Nikutaro.CONFIG.NUM_OF_CUSTOMER; i++) {
-            if(i == Status.customerSkinId) {
-                customer[i].x = w * 0.8 + 200;
-                customer[i].visible = true;
-                createjs.Tween.get(customer[i]).to({x:w * 0.8}, 200, createjs.Ease.cubicOut)
-            } else {
-                customer[i].visible = false;
-            }
+            customer[i].visible = false;
         }
+
+        customer[Status.customerSkinId].x = w * 0.8 + 200;
+        customer[Status.customerSkinId].visible = true;
+        createjs.Tween.get(customer[Status.customerSkinId]).to({x:w * 0.8}, 200, createjs.Ease.cubicOut);
     }
     
     if (Math.random() < Math.atan(Status.quizCount / 10) / (Math.PI / 2) * 0.2 && Status.quizCount >= 5){
