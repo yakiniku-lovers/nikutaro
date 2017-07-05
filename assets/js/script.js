@@ -66,11 +66,45 @@ var Nikutaro = (function() {
         }),
 
         // 解答した部位が正しいかどうかを返す
+        isCorrectPart: function(part_num) {
+            return (part_num == Status.questions[Status.quizId]);
+        },
 
-        // 正解したときのスコア処理
+        getScore: function() {
+            return Status.score;
+        },
 
-        // 不正解したときのスコア処理
+        // success, success_doubtは普通に正解したときとトラップを回避し正解したときのアニメーション(音声も含む)の処理を行う関数を引数とする。
+        // 関数success, 関数success_doubtは引数に関数を持つ
+        // それぞれの関数の処理の最後で引数の関数を実行しなければならない。
+        // failureは不正解だったときのアニメーションの処理を行う関数を引数とする。
+        anserJudge: function(part_num, success, success_doubt, failure) {
+            if (this.isCorrectPart(part_num)) {
+                if (Status.alreadyCorrected == false){
+                    this.correctAnswer();
+                    Status.alreadyCorrected = true;
+            
+                    if (Status.questions[Status.quizId] >= 0){
+                        success(nextProblem);
+                    } else {
+                        success_doubt(nextProblem.bind(this, true));
+                    }
+                }
+            } else {
+                failure();
+                this.wrongAnswer();
+            }
+        },
 
+        correctAnswer: function() {
+            Status.score += 10;
+            Status.extendTimeGage += 1;
+        },
+
+        wrongAnswer: function() {
+            Status.score -= 50;
+            Status.extendTimeGage = 0;   
+        }
         // 連続して正解したら時間が伸びるやつ
 
         // 問題の出題
@@ -192,36 +226,30 @@ function tick(event) {
 }
 
 // 牛の部位をクリックしたときに呼ばれる
-function clickBeefParts(event, i) {
-    if (i == Status.questions[Status.quizId]){
-        if (Status.alreadyCorrected == false){
-            Status.score += 10;
-            Status.extendTimeGage += 1;
-            Status.alreadyCorrected = true;
-            
-            if (Status.questions[Status.quizId] >= 0){
-                createjs.Sound.play("mow");
-                createjs.Tween.get(niku)
-                    .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 120)
-                    .call(function (){
-                        createjs.Tween.get(customer[Status.customerSkinId]).to({x: 0}, 200);
-                    })
-                    .to({x: w * 0.5 ,y: h*0.6})
-                    .wait(120)
-                    .call(nextProblem);
-            } else {
-                createjs.Sound.play("ha-sound");
-                nextProblem(true);
-            }
+function clickBeefParts(event, part_num) {
+    Nikutaro.anserJudge(part_num,
+        function success(callback) {
+            createjs.Sound.play("mow");
+            createjs.Tween.get(niku)
+                .to({x: customer[Status.customerSkinId].x-100, y: customer[Status.customerSkinId].y-50}, 120)
+                .call(function (){
+                    createjs.Tween.get(customer[Status.customerSkinId]).to({x: 0}, 200);
+                })
+                .to({x: w * 0.5 ,y: h*0.6})
+                .wait(120)
+                .call(callback);
+        }, 
+        function success_doubt(callback) {
+            createjs.Sound.play("ha-sound");
+            callback();
+        },
+        function failure() {
+            createjs.Sound.play("mowmow");
         }
-    } else {
-        Status.extendTimeGage = 0;
-        createjs.Sound.play("mowmow");  
-        Status.score -= 50;
-    }
+    );
+
     checkExtendTimeGage();
 }
-
 
 // ***************************************************
 
